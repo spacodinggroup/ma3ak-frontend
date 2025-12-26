@@ -1,0 +1,6 @@
+export const STUDY_TOOLS = {
+    EXPLAIN: "STUDY_EXPLAIN",
+    SUMMARY: "STUDY_SUMMARY",
+    QUIZ: "STUDY_QUIZ",
+    NOTES: "STUDY_NOTES",
+};
