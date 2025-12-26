@@ -52,8 +52,6 @@ export function Features() {
             {t('featuresSubtitle')}
           </p>
         </div>
-          </p>
-        </div>
 
         {/* Role-Based Features */}
         <div className="grid md:grid-cols-3 gap-6 mb-20">
@@ -73,7 +71,7 @@ export function Features() {
               {/* Features List */}
               <ul className="space-y-2">
                 {role.features.map((feature, i) => (
-                  <li key={i} className="flex items-center gap-2 text-sm">
+                  <li key={feature} className="flex items-center gap-2 text-sm">
                     <div className={`w-1.5 h-1.5 rounded-full bg-${role.color}`} />
                     <span className="text-muted-foreground">{feature}</span>
                   </li>
