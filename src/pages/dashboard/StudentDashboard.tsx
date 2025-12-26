@@ -269,4 +269,6 @@ const StudentDashboard = () => {
       </div>
     </DashboardLayout>
   );
-}
+};
+
+export default StudentDashboard;

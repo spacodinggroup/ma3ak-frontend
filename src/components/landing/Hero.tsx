@@ -53,7 +53,7 @@ export function Hero() {
             </Link>
             <Link to="/login">
               <Button variant="glass" size="xl">
-                {t('signIn')}
+                {t('signInHero')}
               </Button>
             </Link>
           </div>
