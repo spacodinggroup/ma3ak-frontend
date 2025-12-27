@@ -1,6 +1,6 @@
 import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { FileText, Sparkles, Download } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import { useEffect, useState } from 'react';
 import { getFounderPitch } from '@/services/founder';
 
@@ -35,14 +35,23 @@ export default function FounderPitch() {
             </div>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline">
+            <button className={cn(
+              "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+              "border border-border bg-transparent hover:bg-secondary hover:text-secondary-foreground",
+              "h-10 px-4 py-2"
+            )}>
               <Download className="w-4 h-4 mr-2" />
               Export
-            </Button>
-            <Button className="bg-role-founder hover:bg-role-founder/80">
+            </button>
+            <button className={cn(
+              "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+              "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/25",
+              "h-10 px-4 py-2",
+              "bg-role-founder hover:bg-role-founder/80"
+            )}>
               <Sparkles className="w-4 h-4 mr-2" />
               AI Generate
-            </Button>
+            </button>
           </div>
         </div>
 

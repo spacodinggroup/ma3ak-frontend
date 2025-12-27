@@ -1,7 +1,7 @@
 import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Link } from 'react-router-dom';
@@ -69,10 +69,15 @@ export default function BusinessDashboard() {
           </div>
           <div className={`flex items-center gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
             <Link to="/dashboard/chat">
-              <Button className="bg-role-business hover:bg-role-business/80">
+              <button className={cn(
+                "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+                "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/25",
+                "h-10 px-4 py-2",
+                "bg-role-business hover:bg-role-business/80"
+              )}>
                 <Briefcase className={`w-4 h-4 ${isRTL ? 'ml-2' : 'mr-2'}`} />
                 {t('aiBusinessAdvisor')}
-              </Button>
+              </button>
             </Link>
           </div>
         </div>
@@ -121,7 +126,7 @@ export default function BusinessDashboard() {
               </div>
               <div className="space-y-6">
                 <TasksAndGoals />
-                
+
                 {/* Monthly Goal Card */}
                 <div className="bg-gradient-to-br from-role-business/20 to-card rounded-xl border border-role-business/30 p-4">
                   <h3 className="font-semibold mb-2">{t('monthlyRevenueGoal')}</h3>

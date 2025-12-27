@@ -1,6 +1,6 @@
 import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { PenTool, Sparkles, Copy, FileText } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import { Textarea } from '@/components/ui/textarea';
 import { useState, useEffect } from 'react';
 import { getBusinessContent } from '@/services/business';
@@ -93,18 +93,30 @@ export default function BusinessContent() {
             </div>
           )}
           <div className="flex gap-2">
-            <Button
+            <button
               onClick={handleGenerate}
               disabled={generating || !content.trim() || loading}
-              className="bg-role-business hover:bg-role-business/80"
+              className={cn(
+                "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+                "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/25",
+                "h-10 px-4 py-2",
+                "bg-role-business hover:bg-role-business/80"
+              )}
             >
               <Sparkles className="w-4 h-4 mr-2" />
               {generating ? 'Generating...' : 'Generate'}
-            </Button>
-            <Button variant="outline" disabled={!generatedContent}>
+            </button>
+            <button
+              disabled={!generatedContent}
+              className={cn(
+                "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+                "border border-border bg-transparent hover:bg-secondary hover:text-secondary-foreground",
+                "h-10 px-4 py-2"
+              )}
+            >
               <Copy className="w-4 h-4 mr-2" />
               Copy
-            </Button>
+            </button>
           </div>
         </div>
       </div>

@@ -1,6 +1,6 @@
 import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { Code2, Sparkles } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
 import { getFounderTech } from '@/services/founder';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -36,10 +36,15 @@ export default function FounderTech() {
               <p className="text-muted-foreground">Your technology choices</p>
             </div>
           </div>
-          <Button className="bg-role-founder hover:bg-role-founder/80">
+          <button className={cn(
+            "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+            "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/25",
+            "h-10 px-4 py-2",
+            "bg-role-founder hover:bg-role-founder/80"
+          )}>
             <Sparkles className="w-4 h-4 mr-2" />
             Get Recommendations
-          </Button>
+          </button>
         </div>
 
         <div className="grid md:grid-cols-2 gap-4">

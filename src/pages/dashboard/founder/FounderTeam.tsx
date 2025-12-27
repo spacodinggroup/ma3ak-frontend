@@ -1,6 +1,6 @@
 import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { Users, UserPlus, MessageSquare } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
 import { getFounderTeam } from '@/services/founder';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -36,10 +36,15 @@ export default function FounderTeam() {
               <p className="text-muted-foreground">Manage your team members</p>
             </div>
           </div>
-          <Button className="bg-role-founder hover:bg-role-founder/80">
+          <button className={cn(
+            "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+            "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/25",
+            "h-10 px-4 py-2",
+            "bg-role-founder hover:bg-role-founder/80"
+          )}>
             <UserPlus className="w-4 h-4 mr-2" />
             Invite Member
-          </Button>
+          </button>
         </div>
 
         <div className="grid md:grid-cols-2 gap-4">
@@ -64,18 +69,23 @@ export default function FounderTeam() {
                     <div className="w-12 h-12 rounded-full bg-gradient-to-br from-role-founder to-violet-500 flex items-center justify-center text-white font-medium">
                       {member.avatar}
                     </div>
-                    <div className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-card ${
-                      member.status === 'online' ? 'bg-green-400' : 'bg-muted-foreground'
-                    }`} />
+                    <div className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-card ${member.status === 'online' ? 'bg-green-400' : 'bg-muted-foreground'
+                      }`} />
                   </div>
                   <div>
                     <p className="font-medium">{member.name}</p>
                     <p className="text-sm text-muted-foreground">{member.role}</p>
                   </div>
                 </div>
-                <Button variant="ghost" size="sm">
+                <button
+                  className={cn(
+                    "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+                    "hover:bg-secondary hover:text-secondary-foreground",
+                    "h-9 rounded-md px-3"
+                  )}
+                >
                   <MessageSquare className="w-4 h-4" />
-                </Button>
+                </button>
               </div>
             ))
           )}

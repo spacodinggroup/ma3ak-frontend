@@ -1,6 +1,6 @@
 import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { Milestone, Plus, CheckCircle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import { useEffect, useState } from 'react';
 import { getFounderMilestones } from '@/services/founder';
 
@@ -34,10 +34,15 @@ export default function FounderMilestones() {
               <p className="text-muted-foreground">Track your startup journey</p>
             </div>
           </div>
-          <Button className="bg-role-founder hover:bg-role-founder/80">
+          <button className={cn(
+            "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+            "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/25",
+            "h-10 px-4 py-2",
+            "bg-role-founder hover:bg-role-founder/80"
+          )}>
             <Plus className="w-4 h-4 mr-2" />
             Add Milestone
-          </Button>
+          </button>
         </div>
 
         <div className="bg-card rounded-xl border border-border p-6">
@@ -55,11 +60,10 @@ export default function FounderMilestones() {
             ) : (
               milestones.map((milestone, index) => (
                 <div key={index} className="flex items-center gap-4">
-                  <div className={`w-4 h-4 rounded-full ${
-                    milestone.status === 'completed' ? 'bg-emerald-400' :
-                    milestone.status === 'in-progress' ? 'bg-role-founder animate-pulse' :
-                    'bg-muted-foreground/30'
-                  }`} />
+                  <div className={`w-4 h-4 rounded-full ${milestone.status === 'completed' ? 'bg-emerald-400' :
+                      milestone.status === 'in-progress' ? 'bg-role-founder animate-pulse' :
+                        'bg-muted-foreground/30'
+                    }`} />
                   <div className="flex-1">
                     <p className={`font-medium ${milestone.status === 'completed' ? 'text-muted-foreground' : ''}`}>
                       {milestone.name}

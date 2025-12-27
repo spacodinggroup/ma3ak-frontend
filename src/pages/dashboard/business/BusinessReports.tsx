@@ -1,6 +1,6 @@
 import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { FileText, Download, Plus } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
 import { getBusinessReports } from '@/services/business';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -36,10 +36,15 @@ export default function BusinessReports() {
               <p className="text-muted-foreground">View and download reports</p>
             </div>
           </div>
-          <Button className="bg-role-business hover:bg-role-business/80">
+          <button className={cn(
+            "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+            "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/25",
+            "h-10 px-4 py-2",
+            "bg-role-business hover:bg-role-business/80"
+          )}>
             <Plus className="w-4 h-4 mr-2" />
             Generate Report
-          </Button>
+          </button>
         </div>
 
         <div className="space-y-3">
@@ -73,9 +78,15 @@ export default function BusinessReports() {
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="text-xs px-2 py-1 rounded-full bg-muted text-muted-foreground">{report.type}</span>
-                  <Button variant="ghost" size="sm">
+                  <button
+                    className={cn(
+                      "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+                      "hover:bg-secondary hover:text-secondary-foreground",
+                      "h-9 rounded-md px-3"
+                    )}
+                  >
                     <Download className="w-4 h-4" />
-                  </Button>
+                  </button>
                 </div>
               </div>
             ))

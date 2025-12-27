@@ -1,7 +1,6 @@
 import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { FileText, Upload, Search } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
 import { useEffect, useState } from 'react';
 import { getStudentNotes } from '@/services/student';
 
@@ -43,17 +42,25 @@ export default function StudentNotes() {
               </p>
             </div>
           </div>
-          <Button className="bg-role-student hover:bg-role-student/80">
+          <button className={cn(
+            "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+            "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/25",
+            "h-10 px-4 py-2",
+            "bg-role-student hover:bg-role-student/80"
+          )}>
             <Upload className="w-4 h-4 mr-2" />
             Upload
-          </Button>
+          </button>
         </div>
         <div className="flex gap-4">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input
+            <input
               placeholder="Search notes..."
-              className="pl-10"
+              className={cn(
+                "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+                "pl-10"
+              )}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -70,18 +77,16 @@ export default function StudentNotes() {
               >
                 <div className="flex items-start gap-3">
                   <div
-                    className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                      note.type === 'pdf'
+                    className={`w-10 h-10 rounded-lg flex items-center justify-center ${note.type === 'pdf'
                         ? 'bg-red-500/20'
                         : 'bg-role-student/20'
-                    }`}
+                      }`}
                   >
                     <FileText
-                      className={`w-5 h-5 ${
-                        note.type === 'pdf'
+                      className={`w-5 h-5 ${note.type === 'pdf'
                           ? 'text-red-400'
                           : 'text-role-student'
-                      }`}
+                        }`}
                     />
                   </div>
                   <div className="flex-1">

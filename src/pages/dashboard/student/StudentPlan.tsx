@@ -1,6 +1,6 @@
 import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { Calendar, Plus, Play, CheckCircle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import { useEffect, useState } from 'react';
 import { getStudentPlan } from '@/services/student';
 
@@ -34,10 +34,15 @@ export default function StudentPlan() {
               <p className="text-muted-foreground">Your personalized learning schedule</p>
             </div>
           </div>
-          <Button className="bg-role-student hover:bg-role-student/80">
+          <button className={cn(
+            "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+            "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/25",
+            "h-10 px-4 py-2",
+            "bg-role-student hover:bg-role-student/80"
+          )}>
             <Plus className="w-4 h-4 mr-2" />
             Add Task
-          </Button>
+          </button>
         </div>
 
         <div className="bg-card rounded-xl border border-border divide-y divide-border">
@@ -67,9 +72,16 @@ export default function StudentPlan() {
                     <p className="text-xs text-muted-foreground">{item.duration}</p>
                   </div>
                   {!item.completed && (
-                    <Button size="sm" variant="outline" className="border-role-student text-role-student hover:bg-role-student/10">
+                    <button
+                      className={cn(
+                        "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+                        "border border-border bg-transparent hover:bg-secondary hover:text-secondary-foreground",
+                        "h-9 rounded-md px-3",
+                        "border-role-student text-role-student hover:bg-role-student/10"
+                      )}
+                    >
                       <Play className="w-4 h-4" />
-                    </Button>
+                    </button>
                   )}
                 </div>
               </div>

@@ -1,7 +1,6 @@
 import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { Settings, User, Bell, Rocket } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
 import { Switch } from '@/components/ui/switch';
 import { useAuth } from '@/contexts/AuthContext';
 import { useState, useEffect } from 'react';
@@ -79,27 +78,36 @@ export default function FounderSettings() {
               <>
                 <div>
                   <label className="text-sm text-muted-foreground">Name</label>
-                  <Input
+                  <input
                     value={settings?.name || user?.name || ''}
                     onChange={(e) => setSettings({ ...settings, name: e.target.value })}
-                    className="mt-1"
+                    className={cn(
+                      "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+                      "mt-1"
+                    )}
                   />
                 </div>
                 <div>
                   <label className="text-sm text-muted-foreground">Email</label>
-                  <Input
+                  <input
                     value={settings?.email || user?.email || ''}
                     onChange={(e) => setSettings({ ...settings, email: e.target.value })}
-                    className="mt-1"
+                    className={cn(
+                      "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+                      "mt-1"
+                    )}
                   />
                 </div>
                 <div>
                   <label className="text-sm text-muted-foreground">Startup Name</label>
-                  <Input
+                  <input
                     value={settings?.startupName || ''}
                     onChange={(e) => setSettings({ ...settings, startupName: e.target.value })}
                     placeholder="Enter your startup name"
-                    className="mt-1"
+                    className={cn(
+                      "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+                      "mt-1"
+                    )}
                   />
                 </div>
               </>
@@ -171,13 +179,18 @@ export default function FounderSettings() {
           </div>
         </div>
 
-        <Button
+        <button
           onClick={handleSave}
           disabled={loading || saving}
-          className="bg-role-founder hover:bg-role-founder/80"
+          className={cn(
+            "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+            "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/25",
+            "h-10 px-4 py-2",
+            "bg-role-founder hover:bg-role-founder/80"
+          )}
         >
           {saving ? 'Saving...' : 'Save Changes'}
-        </Button>
+        </button>
       </div>
     </DashboardLayout>
   );

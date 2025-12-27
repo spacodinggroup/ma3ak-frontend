@@ -1,6 +1,6 @@
 import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { Clock, Play, Pause, RotateCcw } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
 import { getStudentTimer } from '@/services/student';
 
@@ -46,11 +46,14 @@ export default function StudentTimer() {
           <div className="text-8xl font-bold mb-8 font-mono">
             {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
           </div>
-          
+
           <div className="flex items-center justify-center gap-4">
-            <Button
-              size="lg"
-              variant="outline"
+            <button
+              className={cn(
+                "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+                "border border-border bg-transparent hover:bg-secondary hover:text-secondary-foreground",
+                "h-12 rounded-lg px-8 text-base"
+              )}
               onClick={() => {
                 setMinutes(25);
                 setSeconds(0);
@@ -58,20 +61,51 @@ export default function StudentTimer() {
               }}
             >
               <RotateCcw className="w-5 h-5" />
-            </Button>
-            <Button
-              size="lg"
-              className="bg-role-student hover:bg-role-student/80 px-8"
+            </button>
+            <button
+              className={cn(
+                "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+                "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/25",
+                "h-12 rounded-lg px-8 text-base",
+                "bg-role-student hover:bg-role-student/80 px-8"
+              )}
               onClick={() => setIsRunning(!isRunning)}
             >
               {isRunning ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
-            </Button>
+            </button>
           </div>
 
           <div className="flex justify-center gap-4 mt-8">
-            <Button variant="ghost" onClick={() => { setMinutes(25); setSeconds(0); }}>25 min</Button>
-            <Button variant="ghost" onClick={() => { setMinutes(45); setSeconds(0); }}>45 min</Button>
-            <Button variant="ghost" onClick={() => { setMinutes(60); setSeconds(0); }}>60 min</Button>
+            <button
+              className={cn(
+                "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+                "hover:bg-secondary hover:text-secondary-foreground",
+                "h-10 px-4 py-2"
+              )}
+              onClick={() => { setMinutes(25); setSeconds(0); }}
+            >
+              25 min
+            </button>
+            <button
+              className={cn(
+                "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+                "hover:bg-secondary hover:text-secondary-foreground",
+                "h-10 px-4 py-2"
+              )}
+              onClick={() => { setMinutes(45); setSeconds(0); }}
+            >
+              45 min
+            </button>
+            <button
+              className={cn(
+                "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+                "hover:bg-secondary hover:text-secondary-foreground",
+                "h-10 px-4 py-2"
+              )}
+              onClick={() => { setMinutes(60); setSeconds(0); }}
+            >
+              60 min
+            </button>
           </div>
         </div>
 

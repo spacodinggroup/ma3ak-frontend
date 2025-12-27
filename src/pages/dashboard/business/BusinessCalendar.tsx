@@ -1,6 +1,6 @@
 import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { CalendarDays, Plus, Clock } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
 import { getBusinessCalendar } from '@/services/business';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -36,10 +36,15 @@ export default function BusinessCalendar() {
               <p className="text-muted-foreground">Manage your schedule</p>
             </div>
           </div>
-          <Button className="bg-role-business hover:bg-role-business/80">
+          <button className={cn(
+            "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+            "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/25",
+            "h-10 px-4 py-2",
+            "bg-role-business hover:bg-role-business/80"
+          )}>
             <Plus className="w-4 h-4 mr-2" />
             Add Event
-          </Button>
+          </button>
         </div>
 
         <div className="bg-card rounded-xl border border-border p-6">
@@ -58,14 +63,12 @@ export default function BusinessCalendar() {
             ) : (
               events.map((event, index) => (
                 <div key={index} className="flex items-center gap-4 p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
-                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                    event.type === 'meeting' ? 'bg-blue-500/20' :
-                    event.type === 'call' ? 'bg-green-500/20' : 'bg-purple-500/20'
-                  }`}>
-                    <Clock className={`w-5 h-5 ${
-                      event.type === 'meeting' ? 'text-blue-400' :
-                      event.type === 'call' ? 'text-green-400' : 'text-purple-400'
-                    }`} />
+                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${event.type === 'meeting' ? 'bg-blue-500/20' :
+                      event.type === 'call' ? 'bg-green-500/20' : 'bg-purple-500/20'
+                    }`}>
+                    <Clock className={`w-5 h-5 ${event.type === 'meeting' ? 'text-blue-400' :
+                        event.type === 'call' ? 'text-green-400' : 'text-purple-400'
+                      }`} />
                   </div>
                   <div className="flex-1">
                     <p className="font-medium">{event.title}</p>

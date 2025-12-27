@@ -1,7 +1,7 @@
 import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { useAuth } from '@/contexts/AuthContext';
-import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
+
 import { Progress } from '@/components/ui/progress';
 import {
   BookOpen,
@@ -21,6 +21,7 @@ import {
   TrendingUp,
   Upload,
 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { useEffect, useState } from 'react';
 import { getStudentDashboard } from '@/services/student';
 
@@ -28,9 +29,9 @@ import { getStudentDashboard } from '@/services/student';
 const StudentDashboard = () => {
   const { user } = useAuth();
 
-  const  [studyPlan, setStudyPlan] = useState([]);
-  const  [upcomingExams, setUpcomingExams] = useState([]);
-  const  [subjects, setSubjects] = useState([]);
+  const [studyPlan, setStudyPlan] = useState([]);
+  const [upcomingExams, setUpcomingExams] = useState([]);
+  const [subjects, setSubjects] = useState([]);
   const [stats, setStats] = useState<{
     streak: number;
     hours: number;
@@ -44,9 +45,9 @@ const StudentDashboard = () => {
   } | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() =>{
+  useEffect(() => {
     const loadDashboard = async () => {
-      try{
+      try {
         const data = await getStudentDashboard();
 
         setStudyPlan(data.studyPlan);
@@ -60,8 +61,8 @@ const StudentDashboard = () => {
       }
     };
     loadDashboard();
-    }, []);
-  
+  }, []);
+
   return (
     <DashboardLayout>
       <div className="max-w-7xl mx-auto space-y-6">
@@ -87,10 +88,15 @@ const StudentDashboard = () => {
                 <span className="font-semibold text-orange-400">{stats?.streak ?? 0} day streak</span>
               </div>
               <Link to="/dashboard/chat">
-                <Button className="bg-role-student hover:bg-role-student/80">
+                <button className={cn(
+                  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+                  "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/25",
+                  "h-10 px-4 py-2",
+                  "bg-role-student hover:bg-role-student/80"
+                )}>
                   <Brain className="w-4 h-4 mr-2" />
                   MA3AK AI Tutor
-                </Button>
+                </button>
               </Link>
             </div>
           </div>
@@ -140,10 +146,17 @@ const StudentDashboard = () => {
                 <Calendar className="w-5 h-5 text-role-student" />
                 <h2 className="font-semibold">Today's Study Plan</h2>
               </div>
-              <Button variant="ghost" size="sm">
+              <button
+                type="button"
+                className={cn(
+                  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+                  "hover:bg-secondary hover:text-secondary-foreground",
+                  "h-9 rounded-md px-3"
+                )}
+              >
                 <Plus className="w-4 h-4 mr-1" />
                 Add Task
-              </Button>
+              </button>
             </div>
             <div className="divide-y divide-border">
               {studyPlan.map((item, index) => (
@@ -172,9 +185,16 @@ const StudentDashboard = () => {
                       <p className="text-xs text-muted-foreground">{item.duration}</p>
                     </div>
                     {!item.completed && (
-                      <Button size="sm" variant="outline" className="border-role-student text-role-student hover:bg-role-student/10">
+                      <button
+                        className={cn(
+                          "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+                          "border border-border bg-transparent hover:bg-secondary hover:text-secondary-foreground",
+                          "h-9 rounded-md px-3",
+                          "border-role-student text-role-student hover:bg-role-student/10"
+                        )}
+                      >
                         <Play className="w-4 h-4" />
-                      </Button>
+                      </button>
                     )}
                   </div>
                 </div>

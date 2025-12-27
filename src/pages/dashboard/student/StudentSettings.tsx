@@ -1,7 +1,6 @@
 import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { Settings, User, Bell, Shield } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
 import { Switch } from '@/components/ui/switch';
 import { useAuth } from '@/contexts/AuthContext';
 import { useEffect, useState } from 'react';
@@ -56,11 +55,23 @@ export default function StudentSettings() {
           <div className="space-y-4">
             <div>
               <label className="text-sm text-muted-foreground">Name</label>
-              <Input defaultValue={user?.name} className="mt-1" />
+              <input
+                defaultValue={user?.name}
+                className={cn(
+                  "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+                  "mt-1"
+                )}
+              />
             </div>
             <div>
               <label className="text-sm text-muted-foreground">Email</label>
-              <Input defaultValue={user?.email} className="mt-1" />
+              <input
+                defaultValue={user?.email}
+                className={cn(
+                  "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+                  "mt-1"
+                )}
+              />
             </div>
           </div>
         </div>
@@ -86,13 +97,18 @@ export default function StudentSettings() {
           </div>
         </div>
 
-        <Button 
-          className="bg-role-student hover:bg-role-student/80"
+        <button
+          className={cn(
+            "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+            "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/25",
+            "h-10 px-4 py-2",
+            "bg-role-student hover:bg-role-student/80"
+          )}
           onClick={handleSaveSettings}
           disabled={loading}
         >
           {loading ? "Saving..." : "Save Changes"}
-        </Button>
+        </button>
       </div>
     </DashboardLayout>
   );

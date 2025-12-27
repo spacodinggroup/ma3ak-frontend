@@ -1,7 +1,6 @@
 import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { Users, Search, UserPlus } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
 import { getBusinessCustomers } from '@/services/business';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -43,17 +42,25 @@ export default function BusinessCustomers() {
               <p className="text-muted-foreground">Manage your customer base</p>
             </div>
           </div>
-          <Button className="bg-role-business hover:bg-role-business/80">
+          <button className={cn(
+            "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+            "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/25",
+            "h-10 px-4 py-2",
+            "bg-role-business hover:bg-role-business/80"
+          )}>
             <UserPlus className="w-4 h-4 mr-2" />
             Add Customer
-          </Button>
+          </button>
         </div>
 
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input
+          <input
             placeholder="Search customers..."
-            className="pl-10"
+            className={cn(
+              "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+              "pl-10"
+            )}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -92,9 +99,8 @@ export default function BusinessCustomers() {
                     <td className="p-4">{customer.orders}</td>
                     <td className="p-4 font-medium">{customer.spent}</td>
                     <td className="p-4">
-                      <span className={`text-xs px-2 py-1 rounded-full ${
-                        customer.status === 'active' ? 'bg-green-500/20 text-green-400' : 'bg-muted text-muted-foreground'
-                      }`}>
+                      <span className={`text-xs px-2 py-1 rounded-full ${customer.status === 'active' ? 'bg-green-500/20 text-green-400' : 'bg-muted text-muted-foreground'
+                        }`}>
                         {customer.status}
                       </span>
                     </td>

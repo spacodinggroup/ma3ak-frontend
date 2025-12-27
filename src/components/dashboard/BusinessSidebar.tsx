@@ -21,7 +21,6 @@ import {
   CalendarDays,
   LineChart,
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
@@ -137,7 +136,7 @@ export function BusinessSidebar() {
             </div>
           </div>
         )}
-        
+
         {collapsed && user && (
           <Tooltip delayDuration={0}>
             <TooltipTrigger asChild>
@@ -152,17 +151,19 @@ export function BusinessSidebar() {
           </Tooltip>
         )}
 
-        <Button
-          variant="ghost"
+        <button
+          type="button"
           className={cn(
-            'w-full text-sidebar-foreground/70 hover:text-destructive hover:bg-destructive/10 rounded-xl',
+            "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+            "hover:bg-secondary hover:text-secondary-foreground",
+            "w-full text-sidebar-foreground/70 hover:text-destructive hover:bg-destructive/10 rounded-xl",
             collapsed ? 'justify-center px-2' : isRTL ? 'justify-end' : 'justify-start'
           )}
           onClick={logout}
         >
           <LogOut className="w-5 h-5" />
           {!collapsed && <span className={cn(isRTL ? 'mr-3' : 'ml-3')}>Log out</span>}
-        </Button>
+        </button>
       </div>
 
       {/* Collapse Toggle */}

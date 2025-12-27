@@ -1,6 +1,6 @@
 import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { Target, Plus, CheckCircle, Circle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import { Progress } from '@/components/ui/progress';
 import { useState, useEffect } from 'react';
 import { getBusinessGoals } from '@/services/business';
@@ -39,10 +39,15 @@ export default function BusinessGoals() {
               <p className="text-muted-foreground">Track your objectives</p>
             </div>
           </div>
-          <Button className="bg-role-business hover:bg-role-business/80">
+          <button className={cn(
+            "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+            "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/25",
+            "h-10 px-4 py-2",
+            "bg-role-business hover:bg-role-business/80"
+          )}>
             <Plus className="w-4 h-4 mr-2" />
             Add Task
-          </Button>
+          </button>
         </div>
 
         <div className="bg-card rounded-xl border border-border p-6">
@@ -92,9 +97,8 @@ export default function BusinessGoals() {
                     <Circle className="w-5 h-5 text-muted-foreground" />
                   )}
                   <span className={task.completed ? 'line-through' : ''}>{task.title}</span>
-                  <span className={`text-xs px-2 py-1 rounded-full ml-auto ${
-                    task.priority === 'high' ? 'bg-red-500/20 text-red-400' : 'bg-amber-500/20 text-amber-400'
-                  }`}>
+                  <span className={`text-xs px-2 py-1 rounded-full ml-auto ${task.priority === 'high' ? 'bg-red-500/20 text-red-400' : 'bg-amber-500/20 text-amber-400'
+                    }`}>
                     {task.priority}
                   </span>
                 </div>

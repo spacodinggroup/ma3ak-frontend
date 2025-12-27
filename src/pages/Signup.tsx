@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/contexts/AuthContext';
 import { Sparkles, Mail, Lock, User, ArrowRight, Check } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { ROLE_CONFIGS, UserRole } from '@/types/user';
+import { cn } from '@/lib/utils';
 
 const Signup = () => {
   const [step, setStep] = useState<'details' | 'role'>('details');
@@ -20,7 +19,7 @@ const Signup = () => {
 
   const handleDetailsSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!name || !email || !password) {
       toast({
         title: 'Missing fields',
@@ -86,7 +85,7 @@ const Signup = () => {
       {/* Background Effects */}
       <div className="absolute inset-0 bg-hero-glow opacity-50" />
       <div className="absolute bottom-1/4 left-1/4 w-64 h-64 bg-accent/10 rounded-full blur-3xl" />
-      
+
       <div className="w-full max-w-lg relative z-10">
         {/* Logo */}
         <Link to="/" className="flex items-center justify-center gap-2 mb-8">
@@ -108,13 +107,16 @@ const Signup = () => {
                   <Label htmlFor="name">Full Name</Label>
                   <div className="relative">
                     <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                    <Input
+                    <input
                       id="name"
                       type="text"
                       placeholder="Your Full Name"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      className="pl-10"
+                      className={cn(
+                        "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+                        "pl-10"
+                      )}
                     />
                   </div>
                 </div>
@@ -123,13 +125,16 @@ const Signup = () => {
                   <Label htmlFor="email">Email</Label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                    <Input
+                    <input
                       id="email"
                       type="email"
                       placeholder="@gmail.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="pl-10"
+                      className={cn(
+                        "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+                        "pl-10"
+                      )}
                     />
                   </div>
                 </div>
@@ -138,21 +143,32 @@ const Signup = () => {
                   <Label htmlFor="password">Password</Label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                    <Input
+                    <input
                       id="password"
                       type="password"
                       placeholder="••••••••"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="pl-10"
+                      className={cn(
+                        "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+                        "pl-10"
+                      )}
                     />
                   </div>
                 </div>
 
-                <Button type="submit" variant="hero" className="w-full group">
+                <button
+                  type="submit"
+                  className={cn(
+                    "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+                    "bg-gradient-to-r from-primary to-blue-500 text-primary-foreground font-semibold shadow-lg shadow-primary/30 hover:shadow-primary/50 hover:scale-[1.02] active:scale-[0.98]",
+                    "h-10 px-4 py-2",
+                    "w-full group"
+                  )}
+                >
                   Continue
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </Button>
+                </button>
               </form>
             </>
           ) : (
@@ -167,11 +183,10 @@ const Signup = () => {
                   <button
                     key={role.id}
                     onClick={() => setSelectedRole(role.id)}
-                    className={`w-full text-left p-4 rounded-xl border-2 transition-all ${
-                      selectedRole === role.id
-                        ? 'border-primary bg-primary/10'
-                        : 'border-border hover:border-border/80 hover:bg-secondary/50'
-                    }`}
+                    className={`w-full text-left p-4 rounded-xl border-2 transition-all ${selectedRole === role.id
+                      ? 'border-primary bg-primary/10'
+                      : 'border-border hover:border-border/80 hover:bg-secondary/50'
+                      }`}
                   >
                     <div className="flex items-start gap-4">
                       <div className="text-3xl">{role.icon}</div>
@@ -192,22 +207,32 @@ const Signup = () => {
               </div>
 
               <div className="flex gap-3">
-                <Button 
-                  variant="outline" 
-                  className="flex-1"
+                <button
+                  type="button"
+                  className={cn(
+                    "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+                    "border border-border bg-transparent hover:bg-secondary hover:text-secondary-foreground",
+                    "h-10 px-4 py-2",
+                    "flex-1"
+                  )}
                   onClick={() => setStep('details')}
                 >
                   Back
-                </Button>
-                <Button 
-                  variant="hero" 
-                  className="flex-1 group"
+                </button>
+                <button
+                  type="button"
+                  className={cn(
+                    "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+                    "bg-gradient-to-r from-primary to-blue-500 text-primary-foreground font-semibold shadow-lg shadow-primary/30 hover:shadow-primary/50 hover:scale-[1.02] active:scale-[0.98]",
+                    "h-10 px-4 py-2",
+                    "flex-1 group"
+                  )}
                   onClick={handleRoleSelect}
                   disabled={!selectedRole || isLoading}
                 >
                   {isLoading ? 'Creating...' : 'Get Started'}
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </Button>
+                </button>
               </div>
             </>
           )}

@@ -1,6 +1,6 @@
 import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { GitBranch, Plus, CheckCircle, Circle, CircleDot } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import { useEffect, useState } from 'react';
 import { getFounderRoadmap } from '@/services/founder';
 
@@ -34,10 +34,15 @@ export default function FounderRoadmap() {
               <p className="text-muted-foreground">Plan your MVP and beyond</p>
             </div>
           </div>
-          <Button className="bg-role-founder hover:bg-role-founder/80">
+          <button className={cn(
+            "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+            "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/25",
+            "h-10 px-4 py-2",
+            "bg-role-founder hover:bg-role-founder/80"
+          )}>
             <Plus className="w-4 h-4 mr-2" />
             Add Feature
-          </Button>
+          </button>
         </div>
 
         <div className="bg-card rounded-xl border border-border divide-y divide-border">
@@ -70,18 +75,16 @@ export default function FounderRoadmap() {
                   </span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className={`text-xs px-2 py-1 rounded ${
-                    item.priority === 'P0' ? 'bg-red-500/20 text-red-400' :
-                    item.priority === 'P1' ? 'bg-amber-500/20 text-amber-400' :
-                    'bg-muted text-muted-foreground'
-                  }`}>
+                  <span className={`text-xs px-2 py-1 rounded ${item.priority === 'P0' ? 'bg-red-500/20 text-red-400' :
+                      item.priority === 'P1' ? 'bg-amber-500/20 text-amber-400' :
+                        'bg-muted text-muted-foreground'
+                    }`}>
                     {item.priority}
                   </span>
-                  <span className={`text-xs px-2 py-1 rounded ${
-                    item.status === 'done' ? 'bg-emerald-500/20 text-emerald-400' :
-                    item.status === 'in-progress' ? 'bg-role-founder/20 text-role-founder' :
-                    'bg-muted text-muted-foreground'
-                  }`}>
+                  <span className={`text-xs px-2 py-1 rounded ${item.status === 'done' ? 'bg-emerald-500/20 text-emerald-400' :
+                      item.status === 'in-progress' ? 'bg-role-founder/20 text-role-founder' :
+                        'bg-muted text-muted-foreground'
+                    }`}>
                     {item.status === 'in-progress' ? 'In Progress' : item.status === 'done' ? 'Done' : 'Pending'}
                   </span>
                 </div>

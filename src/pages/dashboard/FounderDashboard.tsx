@@ -1,6 +1,5 @@
 import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { useAuth } from '@/contexts/AuthContext';
-import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { Progress } from '@/components/ui/progress';
 import {
@@ -22,6 +21,7 @@ import {
   Users,
   Zap,
 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { useEffect, useState } from 'react';
 import { getFounderDashboard } from '@/services/founder';
 
@@ -62,12 +62,12 @@ type TeamMember = {
 export default function FounderDashboard() {
   const { user } = useAuth();
 
-const [startupStage, setStartupStage] = useState<StartupStage | null>(null);
-const [metrics, setMetrics] = useState<Metric[]>([]);
-const [roadmapItems, setRoadmapItems] = useState<RoadmapItem[]>([]);
-const [milestones, setMilestones] = useState<MilestoneItem[]>([]);
-const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
-const [loading, setLoading] = useState(true);
+  const [startupStage, setStartupStage] = useState<StartupStage | null>(null);
+  const [metrics, setMetrics] = useState<Metric[]>([]);
+  const [roadmapItems, setRoadmapItems] = useState<RoadmapItem[]>([]);
+  const [milestones, setMilestones] = useState<MilestoneItem[]>([]);
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadDashboard = async () => {
@@ -109,10 +109,15 @@ const [loading, setLoading] = useState(true);
                 <span className="text-sm font-medium text-role-founder">Stage: {startupStage.current}</span>
               </div>
               <Link to="/dashboard/chat">
-                <Button className="bg-role-founder hover:bg-role-founder/80">
+                <button className={cn(
+                  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+                  "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/25",
+                  "h-10 px-4 py-2",
+                  "bg-role-founder hover:bg-role-founder/80"
+                )}>
                   <Sparkles className="w-4 h-4 mr-2" />
                   Ma3ak AI Chat
-                </Button>
+                </button>
               </Link>
             </div>
           </div>
@@ -165,10 +170,17 @@ const [loading, setLoading] = useState(true);
                 <GitBranch className="w-5 h-5 text-role-founder" />
                 <h2 className="font-semibold">Product Roadmap</h2>
               </div>
-              <Button variant="ghost" size="sm">
+              <button
+                type="button"
+                className={cn(
+                  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+                  "hover:bg-secondary hover:text-secondary-foreground",
+                  "h-9 rounded-md px-3"
+                )}
+              >
                 <Lightbulb className="w-4 h-4 mr-1" />
                 AI Suggestions
-              </Button>
+              </button>
             </div>
             <div className="divide-y divide-border">
               {roadmapItems.map((item, index) => (
@@ -266,9 +278,16 @@ const [loading, setLoading] = useState(true);
                 <Users className="w-5 h-5 text-role-founder" />
                 <h2 className="font-semibold">Team Workspace</h2>
               </div>
-              <Button variant="ghost" size="sm" className="text-xs">
+              <button
+                className={cn(
+                  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+                  "hover:bg-secondary hover:text-secondary-foreground",
+                  "h-9 rounded-md px-3",
+                  "text-xs"
+                )}
+              >
                 + Invite
-              </Button>
+              </button>
             </div>
             <div className="p-4 space-y-3">
               {teamMembers.map((member, index) => (
@@ -282,16 +301,27 @@ const [loading, setLoading] = useState(true);
                       <p className="text-xs text-muted-foreground">{member.role}</p>
                     </div>
                   </div>
-                  <Button variant="ghost" size="sm">
+                  <button
+                    className={cn(
+                      "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+                      "hover:bg-secondary hover:text-secondary-foreground",
+                      "h-9 rounded-md px-3"
+                    )}
+                  >
                     <MessageSquare className="w-4 h-4" />
-                  </Button>
+                  </button>
                 </div>
               ))}
               <Link to="/dashboard/chat?mode=team-chat">
-                <Button variant="outline" className="w-full mt-2 border-role-founder/50 text-role-founder hover:bg-role-founder/10">
+                <button className={cn(
+                  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+                  "border border-border bg-transparent hover:bg-secondary hover:text-secondary-foreground",
+                  "h-10 px-4 py-2",
+                  "w-full mt-2 border-role-founder/50 text-role-founder hover:bg-role-founder/10"
+                )}>
                   <Boxes className="w-4 h-4 mr-2" />
                   Open Team Chat with AI
-                </Button>
+                </button>
               </Link>
             </div>
           </div>
@@ -310,10 +340,15 @@ const [loading, setLoading] = useState(true);
               </div>
             </div>
             <Link to="/dashboard/chat">
-              <Button variant="outline" className="border-role-founder text-role-founder hover:bg-role-founder/10">
+              <button className={cn(
+                "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+                "border border-border bg-transparent hover:bg-secondary hover:text-secondary-foreground",
+                "h-10 px-4 py-2",
+                "border-role-founder text-role-founder hover:bg-role-founder/10"
+              )}>
                 Start Investor Prep
                 <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
+              </button>
             </Link>
           </div>
         </div>
