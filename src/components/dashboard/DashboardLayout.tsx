@@ -24,8 +24,9 @@ function DashboardContent({ children }: { children: ReactNode }) {
       case 'business':
         return <BusinessSidebar />;
       case 'founder':
-      default:
         return <FounderSidebar />;
+      default:
+        return null;
     }
   };
 
@@ -34,7 +35,7 @@ function DashboardContent({ children }: { children: ReactNode }) {
       {renderSidebar()}
       <main className={cn(
         'min-h-screen p-6 md:p-8 transition-all duration-300',
-        isRTL 
+        isRTL
           ? (collapsed ? 'mr-[72px]' : 'mr-64')
           : (collapsed ? 'ml-[72px]' : 'ml-64')
       )}>

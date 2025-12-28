@@ -1,4 +1,4 @@
-import  {
+import {
   createContext,
   useContext,
   useState,
@@ -33,37 +33,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   // 🔹 Load auth from localStorage
-
   useEffect(() => {
-
     const storedUser = localStorage.getItem(AUTH_STORAGE_KEY);
     const token = localStorage.getItem(TOKEN_STORAGE_KEY);
 
-
-
     if (storedUser && token) {
-
       try {
         setUser(JSON.parse(storedUser));
       } catch {
         localStorage.clear();
       }
     }
+    setIsInitialized(true);
   }, []);
 
-
-
   // 🔹 Save / Clear auth
-
   const persistAuth = (userData: User | null, token?: string) => {
-
     if (userData && token) {
-
       localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(userData));
       localStorage.setItem(TOKEN_STORAGE_KEY, token);
-
       setUser(userData);
     } else {
       localStorage.removeItem(AUTH_STORAGE_KEY);
@@ -72,34 +63,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-
-
   // ======================
-
   // 🔐 LOGIN
-
   // ======================
-
   const login = async (
     email: string,
     password: string
   ): Promise<User> => {
     setIsLoading(true);
-
-
-
     try {
-
       const res = await fetch(
-
         `${API_BASE_URL}/auth/login`,
-
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email, password }),
         }
-
       );
 
       const data = await res.json();
@@ -114,14 +93,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-
-
   // ======================
-
   // 📝 SIGNUP
-
   // ======================
-
   const signup = async (
     email: string,
     password: string,
@@ -129,8 +103,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     role: UserRole
   ): Promise<User> => {
     setIsLoading(true);
-
-
     try {
       const res = await fetch(
         `${API_BASE_URL}/auth/register`,
@@ -139,7 +111,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email, password, name, role }),
         }
-
       );
 
       const data = await res.json();
@@ -148,8 +119,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         throw new Error(data.message || "Signup failed");
       }
 
-
-
       persistAuth(data.user, data.token);
       return data.user;
     } finally {
@@ -157,26 +126,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-
-
   // ======================
-
   // 🚪 LOGOUT
-
   // ======================
-
   const logout = () => {
     persistAuth(null);
   };
 
-
-
   // ======================
-
   // 🔄 UPDATE ROLE (Frontend only)
-
   // ======================
-
   const setUserRole = (role: UserRole) => {
     if (!user) return;
     const updatedUser = { ...user, role };
@@ -184,26 +143,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(updatedUser);
   };
 
-
-
   return (
-
     <AuthContext.Provider
-
       value={{
         user,
         isAuthenticated: !!user,
-        isLoading,
+        isLoading: isLoading || !isInitialized,
         login,
         signup,
         logout,
         setUserRole,
       }}
-
     >
       {children}
     </AuthContext.Provider>
-
   );
 }
 
