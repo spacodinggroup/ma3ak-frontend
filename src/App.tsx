@@ -49,6 +49,7 @@ import FounderMetrics from "./pages/dashboard/founder/FounderMetrics";
 import FounderSettings from "./pages/dashboard/founder/FounderSettings";
 
 import { RoleBasedRoute } from "@/components/auth/RoleBasedRoute";
+import { UserRole } from "@/types/user";
 
 const queryClient = new QueryClient();
 
@@ -65,11 +66,11 @@ function DashboardRouter() {
 
   // Normalize role check
   switch (user?.role) {
-    case 'student':
+    case UserRole.STUDENT:
       return <Navigate to="/dashboard/student" replace />;
-    case 'business':
+    case UserRole.BUSINESS:
       return <Navigate to="/dashboard/business" replace />;
-    case 'founder':
+    case UserRole.FOUNDER:
       return <Navigate to="/dashboard/founder" replace />;
     default:
       return <Navigate to="/login" replace />;
@@ -92,166 +93,166 @@ const App = () => (
 
               {/* Student Routes */}
               <Route path="/dashboard/student" element={
-                <RoleBasedRoute allowedRoles={['student']}>
+                <RoleBasedRoute allowedRoles={[UserRole.STUDENT]}>
                   <StudentDashboard />
                 </RoleBasedRoute>
               } />
               <Route path="/dashboard/student/chat" element={
-                <RoleBasedRoute allowedRoles={['student']}>
+                <RoleBasedRoute allowedRoles={[UserRole.STUDENT]}>
                   <StudentChat />
                 </RoleBasedRoute>
               } />
               <Route path="/dashboard/student/subjects" element={
-                <RoleBasedRoute allowedRoles={['student']}>
+                <RoleBasedRoute allowedRoles={[UserRole.STUDENT]}>
                   <StudentSubjects />
                 </RoleBasedRoute>
               } />
               <Route path="/dashboard/student/plan" element={
-                <RoleBasedRoute allowedRoles={['student']}>
+                <RoleBasedRoute allowedRoles={[UserRole.STUDENT]}>
                   <StudentPlan />
                 </RoleBasedRoute>
               } />
               <Route path="/dashboard/student/notes" element={
-                <RoleBasedRoute allowedRoles={['student']}>
+                <RoleBasedRoute allowedRoles={[UserRole.STUDENT]}>
                   <StudentNotes />
                 </RoleBasedRoute>
               } />
               <Route path="/dashboard/student/practice" element={
-                <RoleBasedRoute allowedRoles={['student']}>
+                <RoleBasedRoute allowedRoles={[UserRole.STUDENT]}>
                   <StudentPractice />
                 </RoleBasedRoute>
               } />
               <Route path="/dashboard/student/exams" element={
-                <RoleBasedRoute allowedRoles={['student']}>
+                <RoleBasedRoute allowedRoles={[UserRole.STUDENT]}>
                   <StudentExams />
                 </RoleBasedRoute>
               } />
               <Route path="/dashboard/student/progress" element={
-                <RoleBasedRoute allowedRoles={['student']}>
+                <RoleBasedRoute allowedRoles={[UserRole.STUDENT]}>
                   <StudentProgress />
                 </RoleBasedRoute>
               } />
               <Route path="/dashboard/student/timer" element={
-                <RoleBasedRoute allowedRoles={['student']}>
+                <RoleBasedRoute allowedRoles={[UserRole.STUDENT]}>
                   <StudentTimer />
                 </RoleBasedRoute>
               } />
               <Route path="/dashboard/student/settings" element={
-                <RoleBasedRoute allowedRoles={['student']}>
+                <RoleBasedRoute allowedRoles={[UserRole.STUDENT]}>
                   <StudentSettings />
                 </RoleBasedRoute>
               } />
 
               {/* Business Routes */}
               <Route path="/dashboard/business" element={
-                <RoleBasedRoute allowedRoles={['business']}>
+                <RoleBasedRoute allowedRoles={[UserRole.BUSINESS]}>
                   <BusinessDashboard />
                 </RoleBasedRoute>
               } />
               <Route path="/dashboard/business/chat" element={
-                <RoleBasedRoute allowedRoles={['business']}>
+                <RoleBasedRoute allowedRoles={[UserRole.BUSINESS]}>
                   <BusinessChat />
                 </RoleBasedRoute>
               } />
               <Route path="/dashboard/business/sales" element={
-                <RoleBasedRoute allowedRoles={['business']}>
+                <RoleBasedRoute allowedRoles={[UserRole.BUSINESS]}>
                   <BusinessSales />
                 </RoleBasedRoute>
               } />
               <Route path="/dashboard/business/marketing" element={
-                <RoleBasedRoute allowedRoles={['business']}>
+                <RoleBasedRoute allowedRoles={[UserRole.BUSINESS]}>
                   <BusinessMarketing />
                 </RoleBasedRoute>
               } />
               <Route path="/dashboard/business/content" element={
-                <RoleBasedRoute allowedRoles={['business']}>
+                <RoleBasedRoute allowedRoles={[UserRole.BUSINESS]}>
                   <BusinessContent />
                 </RoleBasedRoute>
               } />
               <Route path="/dashboard/business/customers" element={
-                <RoleBasedRoute allowedRoles={['business']}>
+                <RoleBasedRoute allowedRoles={[UserRole.BUSINESS]}>
                   <BusinessCustomers />
                 </RoleBasedRoute>
               } />
               <Route path="/dashboard/business/goals" element={
-                <RoleBasedRoute allowedRoles={['business']}>
+                <RoleBasedRoute allowedRoles={[UserRole.BUSINESS]}>
                   <BusinessGoals />
                 </RoleBasedRoute>
               } />
               <Route path="/dashboard/business/analytics" element={
-                <RoleBasedRoute allowedRoles={['business']}>
+                <RoleBasedRoute allowedRoles={[UserRole.BUSINESS]}>
                   <BusinessAnalytics />
                 </RoleBasedRoute>
               } />
               <Route path="/dashboard/business/reports" element={
-                <RoleBasedRoute allowedRoles={['business']}>
+                <RoleBasedRoute allowedRoles={[UserRole.BUSINESS]}>
                   <BusinessReports />
                 </RoleBasedRoute>
               } />
               <Route path="/dashboard/business/calendar" element={
-                <RoleBasedRoute allowedRoles={['business']}>
+                <RoleBasedRoute allowedRoles={[UserRole.BUSINESS]}>
                   <BusinessCalendar />
                 </RoleBasedRoute>
               } />
               <Route path="/dashboard/business/settings" element={
-                <RoleBasedRoute allowedRoles={['business']}>
+                <RoleBasedRoute allowedRoles={[UserRole.BUSINESS]}>
                   <BusinessSettings />
                 </RoleBasedRoute>
               } />
 
               {/* Founder Routes */}
               <Route path="/dashboard/founder" element={
-                <RoleBasedRoute allowedRoles={['founder']}>
+                <RoleBasedRoute allowedRoles={[UserRole.FOUNDER]}>
                   <FounderDashboard />
                 </RoleBasedRoute>
               } />
               <Route path="/dashboard/founder/chat" element={
-                <RoleBasedRoute allowedRoles={['founder']}>
+                <RoleBasedRoute allowedRoles={[UserRole.FOUNDER]}>
                   <FounderChat />
                 </RoleBasedRoute>
               } />
               <Route path="/dashboard/founder/validate" element={
-                <RoleBasedRoute allowedRoles={['founder']}>
+                <RoleBasedRoute allowedRoles={[UserRole.FOUNDER]}>
                   <FounderValidate />
                 </RoleBasedRoute>
               } />
               <Route path="/dashboard/founder/roadmap" element={
-                <RoleBasedRoute allowedRoles={['founder']}>
+                <RoleBasedRoute allowedRoles={[UserRole.FOUNDER]}>
                   <FounderRoadmap />
                 </RoleBasedRoute>
               } />
               <Route path="/dashboard/founder/tech" element={
-                <RoleBasedRoute allowedRoles={['founder']}>
+                <RoleBasedRoute allowedRoles={[UserRole.FOUNDER]}>
                   <FounderTech />
                 </RoleBasedRoute>
               } />
               <Route path="/dashboard/founder/milestones" element={
-                <RoleBasedRoute allowedRoles={['founder']}>
+                <RoleBasedRoute allowedRoles={[UserRole.FOUNDER]}>
                   <FounderMilestones />
                 </RoleBasedRoute>
               } />
               <Route path="/dashboard/founder/okrs" element={
-                <RoleBasedRoute allowedRoles={['founder']}>
+                <RoleBasedRoute allowedRoles={[UserRole.FOUNDER]}>
                   <FounderOKRs />
                 </RoleBasedRoute>
               } />
               <Route path="/dashboard/founder/team" element={
-                <RoleBasedRoute allowedRoles={['founder']}>
+                <RoleBasedRoute allowedRoles={[UserRole.FOUNDER]}>
                   <FounderTeam />
                 </RoleBasedRoute>
               } />
               <Route path="/dashboard/founder/pitch" element={
-                <RoleBasedRoute allowedRoles={['founder']}>
+                <RoleBasedRoute allowedRoles={[UserRole.FOUNDER]}>
                   <FounderPitch />
                 </RoleBasedRoute>
               } />
               <Route path="/dashboard/founder/metrics" element={
-                <RoleBasedRoute allowedRoles={['founder']}>
+                <RoleBasedRoute allowedRoles={[UserRole.FOUNDER]}>
                   <FounderMetrics />
                 </RoleBasedRoute>
               } />
               <Route path="/dashboard/founder/settings" element={
-                <RoleBasedRoute allowedRoles={['founder']}>
+                <RoleBasedRoute allowedRoles={[UserRole.FOUNDER]}>
                   <FounderSettings />
                 </RoleBasedRoute>
               } />

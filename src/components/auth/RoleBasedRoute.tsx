@@ -25,11 +25,11 @@ export function RoleBasedRoute({ children, allowedRoles }: RoleBasedRouteProps) 
     if (!allowedRoles.includes(user.role)) {
         // Redirect to the correct dashboard based on their role
         switch (user.role) {
-            case 'student':
+            case UserRole.STUDENT:
                 return <Navigate to="/dashboard/student" replace />;
-            case 'business':
+            case UserRole.BUSINESS:
                 return <Navigate to="/dashboard/business" replace />;
-            case 'founder':
+            case UserRole.FOUNDER:
                 return <Navigate to="/dashboard/founder" replace />;
             default:
                 // Prevent infinite redirect loops if role is invalid

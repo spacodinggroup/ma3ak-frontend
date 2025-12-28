@@ -4,6 +4,7 @@ import { Label } from '@/components/ui/label';
 import { useAuth } from '@/contexts/AuthContext';
 import { Sparkles, Mail, Lock, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { UserRole } from '@/types/user';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -25,13 +26,13 @@ const Login = () => {
 
       // Strict role-based redirect
       switch (user.role) {
-        case "student":
+        case UserRole.STUDENT:
           navigate("/dashboard/student");
           break;
-        case "founder":
+        case UserRole.FOUNDER:
           navigate("/dashboard/founder");
           break;
-        case "business":
+        case UserRole.BUSINESS:
           navigate("/dashboard/business");
           break;
         default:

@@ -1,4 +1,8 @@
-export type UserRole = 'student' | 'business' | 'founder';
+export enum UserRole {
+  STUDENT = 'student',
+  BUSINESS = 'business',
+  FOUNDER = 'founder',
+}
 
 export interface User {
   id: string;
@@ -24,7 +28,7 @@ export interface RoleConfig {
 
 export const ROLE_CONFIGS: RoleConfig[] = [
   {
-    id: 'student',
+    id: UserRole.STUDENT,
     title: 'Student',
     description: 'AI study assistant for learning, exams, and academic success',
     icon: '🎓',
@@ -38,7 +42,7 @@ export const ROLE_CONFIGS: RoleConfig[] = [
     ],
   },
   {
-    id: 'business',
+    id: UserRole.BUSINESS,
     title: 'Business Owner',
     description: 'AI advisor for marketing, sales, and business growth',
     icon: '💼',
@@ -52,7 +56,7 @@ export const ROLE_CONFIGS: RoleConfig[] = [
     ],
   },
   {
-    id: 'founder',
+    id: UserRole.FOUNDER,
     title: 'Startup Founder',
     description: 'AI co-founder for ideation, MVP, and scaling your startup',
     icon: '🚀',

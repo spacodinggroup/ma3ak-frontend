@@ -7,6 +7,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { SidebarProvider, useSidebar } from '@/contexts/SidebarContext';
 import { Navigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
+import { UserRole } from '@/types/user';
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -19,11 +20,11 @@ function DashboardContent({ children }: { children: ReactNode }) {
 
   const renderSidebar = () => {
     switch (user?.role) {
-      case 'student':
+      case UserRole.STUDENT:
         return <StudentSidebar />;
-      case 'business':
+      case UserRole.BUSINESS:
         return <BusinessSidebar />;
-      case 'founder':
+      case UserRole.FOUNDER:
         return <FounderSidebar />;
       default:
         return null;

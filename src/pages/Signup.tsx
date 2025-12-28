@@ -43,11 +43,11 @@ const Signup = () => {
 
   const getRoleDashboardPath = (role: UserRole): string => {
     switch (role) {
-      case 'student':
+      case UserRole.STUDENT:
         return '/dashboard/student';
-      case 'business':
+      case UserRole.BUSINESS:
         return '/dashboard/business';
-      case 'founder':
+      case UserRole.FOUNDER:
         return '/dashboard/founder';
       default:
         return '/dashboard';

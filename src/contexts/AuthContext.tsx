@@ -29,6 +29,16 @@ const TOKEN_STORAGE_KEY = "Ma3ak_ai_token";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+const normalizeRole = (role: string): UserRole | null => {
+  const normalized = role?.toLowerCase().trim();
+
+  if (normalized === "student") return UserRole.STUDENT;
+  if (normalized === "business") return UserRole.BUSINESS;
+  if (normalized === "founder") return UserRole.FOUNDER;
+
+  return null;
+};
+
 export function AuthProvider({ children }: { children: ReactNode }) {
 
   const [user, setUser] = useState<User | null>(null);
@@ -42,7 +52,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     if (storedUser && token) {
       try {
-        setUser(JSON.parse(storedUser));
+        const parsedUser = JSON.parse(storedUser);
+        // Validate role
+        const validatedRole = normalizeRole(parsedUser.role);
+
+        if (validatedRole) {
+          parsedUser.role = validatedRole;
+          setUser(parsedUser);
+        } else {
+          // Invalid role in storage, clear it
+          localStorage.clear();
+        }
       } catch {
         localStorage.clear();
       }
@@ -53,10 +73,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // 🔹 Save / Clear auth
   const persistAuth = (userData: User | null, token?: string) => {
     if (userData && token) {
+      const normalizedRole = normalizeRole(userData.role);
+
+      if (!normalizedRole) {
+        console.error(`Invalid role encountered: ${userData.role}. Clearing session.`);
+        localStorage.removeItem(AUTH_STORAGE_KEY);
+        localStorage.removeItem(TOKEN_STORAGE_KEY);
+        setUser(null);
+        return;
+      }
+
       // Normalize role to lowercase to ensure consistency
       const normalizedUser = {
         ...userData,
-        role: userData.role?.toLowerCase() as UserRole
+        role: normalizedRole
       };
 
       localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(normalizedUser));
@@ -92,8 +122,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         throw new Error(data.message || "Login failed");
       }
 
-      persistAuth(data.user, data.token);
-      return data.user;
+      const normalizedRole = normalizeRole(data.user.role);
+      if (!normalizedRole) {
+        throw new Error(`Login failed: Invalid role '${data.user.role}' received.`);
+      }
+
+      // Ensure we pass the normalized user to persistAuth
+      const safeUser = { ...data.user, role: normalizedRole };
+      persistAuth(safeUser, data.token);
+      return safeUser;
     } finally {
       setIsLoading(false);
     }
@@ -125,8 +162,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         throw new Error(data.message || "Signup failed");
       }
 
-      persistAuth(data.user, data.token);
-      return data.user;
+      const normalizedRole = normalizeRole(data.user.role);
+      if (!normalizedRole) {
+        throw new Error(`Signup failed: Invalid role '${data.user.role}' received.`);
+      }
+
+      const safeUser = { ...data.user, role: normalizedRole };
+      persistAuth(safeUser, data.token);
+      return safeUser;
     } finally {
       setIsLoading(false);
     }
