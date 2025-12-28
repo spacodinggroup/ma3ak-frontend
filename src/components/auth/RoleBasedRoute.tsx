@@ -32,6 +32,8 @@ export function RoleBasedRoute({ children, allowedRoles }: RoleBasedRouteProps) 
             case 'founder':
                 return <Navigate to="/dashboard/founder" replace />;
             default:
+                // Prevent infinite redirect loops if role is invalid
+                console.warn("Unauthorized access with unknown role:", user.role);
                 return <Navigate to="/login" replace />;
         }
     }

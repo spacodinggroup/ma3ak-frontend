@@ -63,6 +63,7 @@ function DashboardRouter() {
     return <Navigate to="/login" replace />;
   }
 
+  // Normalize role check
   switch (user?.role) {
     case 'student':
       return <Navigate to="/dashboard/student" replace />;

@@ -20,14 +20,24 @@ const Login = () => {
     setLoading(true);
 
     try {
+      // Login returns the user object (normalized by AuthContext)
       const user = await login(email, password);
 
-      if (user.role === "student") {
-        navigate("/dashboard/student");
-      } else if (user.role === "founder") {
-        navigate("/dashboard/founder");
-      } else {
-        navigate("/dashboard/business");
+      // Strict role-based redirect
+      switch (user.role) {
+        case "student":
+          navigate("/dashboard/student");
+          break;
+        case "founder":
+          navigate("/dashboard/founder");
+          break;
+        case "business":
+          navigate("/dashboard/business");
+          break;
+        default:
+          // Safety catch for unknown roles
+          console.error("Unknown role:", user.role);
+          setError("Login successful but no dashboard found for your role.");
       }
     } catch (err: any) {
       setError(err.message || "Email or password incorrect");

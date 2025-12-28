@@ -53,9 +53,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // 🔹 Save / Clear auth
   const persistAuth = (userData: User | null, token?: string) => {
     if (userData && token) {
-      localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(userData));
+      // Normalize role to lowercase to ensure consistency
+      const normalizedUser = {
+        ...userData,
+        role: userData.role?.toLowerCase() as UserRole
+      };
+
+      localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(normalizedUser));
       localStorage.setItem(TOKEN_STORAGE_KEY, token);
-      setUser(userData);
+      setUser(normalizedUser);
     } else {
       localStorage.removeItem(AUTH_STORAGE_KEY);
       localStorage.removeItem(TOKEN_STORAGE_KEY);
