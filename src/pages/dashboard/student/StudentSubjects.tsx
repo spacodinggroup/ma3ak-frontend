@@ -1,7 +1,7 @@
 import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
-import { BookOpen, Plus, X, Sparkles } from 'lucide-react';
+import { BookOpen, Plus, X, ArrowRight } from 'lucide-react';
 import { useState } from 'react';
-import { generateAIStudyPlan, StudyPlanItem } from '@/services/student';
+import { useNavigate } from 'react-router-dom';
 
 interface Subject {
   id: string;
@@ -11,10 +11,7 @@ interface Subject {
 export default function StudentSubjects() {
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [inputSubject, setInputSubject] = useState<string>('');
-  const [studyPlan, setStudyPlan] = useState<StudyPlanItem[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [generating, setGenerating] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const handleAddSubject = () => {
     if (!inputSubject.trim()) return;
@@ -32,33 +29,16 @@ export default function StudentSubjects() {
     setSubjects(prev => prev.filter(s => s.id !== id));
   };
 
-  const handleGeneratePlan = async () => {
+  const handleGeneratePlan = () => {
     if (subjects.length === 0) {
-      setError('Please add at least one subject first');
+      alert('Please add at least one subject first');
       return;
     }
 
-    setGenerating(true);
-    setError(null);
-
-    try {
-      const subjectNames = subjects.map(s => s.name);
-      const { studyPlan: plan } = await generateAIStudyPlan({ subjects: subjectNames });
-
-      // Safe handling of response
-      if (Array.isArray(plan) && plan.length > 0) {
-        setStudyPlan(plan);
-      } else {
-        setStudyPlan([]);
-        setError('We couldn\'t generate a study plan. Please try again.');
-      }
-    } catch (err) {
-      console.error('Error generating study plan:', err);
-      setError('We couldn\'t generate a study plan. Please try again.');
-      setStudyPlan([]);
-    } finally {
-      setGenerating(false);
-    }
+    // Navigate to plan page with subjects
+    navigate('/dashboard/student/plan', {
+      state: { subjects: subjects.map(s => s.name) }
+    });
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -69,22 +49,21 @@ export default function StudentSubjects() {
 
   return (
     <DashboardLayout>
-      <div className="max-w-6xl mx-auto space-y-6">
+      <div className="max-w-4xl mx-auto space-y-6">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 rounded-xl bg-role-student/20 flex items-center justify-center">
             <BookOpen className="w-6 h-6 text-role-student" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold">Subjects & Study Plan</h1>
-            <p className="text-muted-foreground">Add subjects and generate your AI study plan</p>
+            <h1 className="text-2xl font-bold">My Subjects</h1>
+            <p className="text-muted-foreground">Add subjects for your study plan</p>
           </div>
         </div>
 
-        {/* Subject Input Section */}
         <div className="bg-card rounded-xl border border-border p-6">
           <h2 className="text-lg font-semibold mb-4">Add Your Subjects</h2>
 
-          <div className="flex gap-2 mb-4">
+          <div className="flex gap-2 mb-6">
             <input
               type="text"
               value={inputSubject}
@@ -103,10 +82,11 @@ export default function StudentSubjects() {
             </button>
           </div>
 
-          {/* Subjects List */}
-          {subjects.length > 0 && (
-            <div className="space-y-2">
-              <h3 className="text-sm font-medium text-muted-foreground">Added Subjects ({subjects.length})</h3>
+          {subjects.length > 0 ? (
+            <div className="space-y-3">
+              <h3 className="text-sm font-medium text-muted-foreground">
+                Added Subjects ({subjects.length})
+              </h3>
               <ul className="space-y-2">
                 {subjects?.map((subject) => (
                   <li
@@ -123,81 +103,23 @@ export default function StudentSubjects() {
                   </li>
                 ))}
               </ul>
+
+              <button
+                onClick={handleGeneratePlan}
+                className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 bg-role-student hover:bg-role-student/80 text-white h-10 px-4 w-full mt-4"
+              >
+                Generate Study Plan
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+          ) : (
+            <div className="text-center py-8 text-muted-foreground">
+              <BookOpen className="w-12 h-12 mx-auto mb-3 opacity-50" />
+              <p className="text-sm">No subjects added yet</p>
+              <p className="text-xs mt-1">Add subjects above to get started</p>
             </div>
           )}
-
-          {/* Generate Button */}
-          <button
-            onClick={handleGeneratePlan}
-            disabled={subjects.length === 0 || generating}
-            className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-role-student hover:bg-role-student/80 text-white h-10 px-4 mt-4 w-full"
-          >
-            {generating ? (
-              <>
-                <Sparkles className="w-4 h-4 animate-pulse" />
-                Generating Study Plan...
-              </>
-            ) : (
-              <>
-                <Sparkles className="w-4 h-4" />
-                Generate AI Study Plan
-              </>
-            )}
-          </button>
         </div>
-
-        {/* Error Display */}
-        {error && (
-          <div className="bg-destructive/10 border border-destructive/30 rounded-lg p-4">
-            <p className="text-sm text-destructive font-medium">{error}</p>
-          </div>
-        )}
-
-        {/* Study Plan Display */}
-        {studyPlan && studyPlan.length > 0 && (
-          <div className="bg-card rounded-xl border border-border p-6">
-            <h2 className="text-lg font-semibold mb-4">Your AI-Generated Study Plan</h2>
-
-            <div className="space-y-4">
-              {studyPlan?.map((item, index) => (
-                <div
-                  key={index}
-                  className="bg-secondary/30 rounded-lg p-4 border border-border/50"
-                >
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-8 h-8 rounded-full bg-role-student/20 flex items-center justify-center">
-                      <span className="text-xs font-bold text-role-student">{index + 1}</span>
-                    </div>
-                    <div>
-                      <h3 className="font-semibold">{item.subject}</h3>
-                      <p className="text-xs text-muted-foreground">{item.date}</p>
-                    </div>
-                  </div>
-
-                  {item.tasks && item.tasks.length > 0 && (
-                    <ul className="space-y-1 mt-3">
-                      {item.tasks.map((task, taskIndex) => (
-                        <li key={taskIndex} className="text-sm text-foreground/80 flex items-start gap-2">
-                          <span className="text-role-student mt-1">•</span>
-                          <span>{task}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* No Plan Yet */}
-        {!generating && studyPlan.length === 0 && subjects.length > 0 && !error && (
-          <div className="bg-card rounded-xl border border-border p-8 text-center">
-            <Sparkles className="w-12 h-12 mx-auto mb-3 text-muted-foreground opacity-50" />
-            <p className="text-muted-foreground">No study plan generated yet.</p>
-            <p className="text-sm text-muted-foreground mt-1">Click "Generate AI Study Plan" to create one!</p>
-          </div>
-        )}
       </div>
     </DashboardLayout>
   );
