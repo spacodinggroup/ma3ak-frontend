@@ -29,27 +29,27 @@ export default function StudentChat() {
     setLoading(true);
 
     try {
-      const data = await sendStudentMessage(userMessage);
+      const { reply } = await sendStudentMessage(userMessage);
 
-      // 🔹 Add AI reply safely
-      // Now using defensive check + fallback string if empty
-      if (data && typeof data.reply === 'string') {
-        setMessages((prev) => [
-          ...prev,
-          { sender: 'ai', text: data.reply || "I'm not sure how to respond to that." },
+      // 2. CHAT STATE SAFETY (Strict Guard)
+      if (typeof reply !== "string" || !reply.trim()) {
+        setMessages((m) => [
+          ...m,
+          { sender: 'ai', text: "The AI could not generate a response." }
         ]);
-      } else {
-        console.error('Invalid Student Chat response:', data);
-        setMessages((prev) => [
-          ...prev,
-          { sender: 'ai', text: "I'm having trouble understanding. Could you please rephrase?" },
-        ]);
+        return;
       }
-    } catch (err) {
-      console.error('Chat error', err);
+
       setMessages((prev) => [
         ...prev,
-        { sender: 'ai', text: "I'm having trouble connecting right now. Please try again later." },
+        { sender: 'ai', text: reply },
+      ]);
+    } catch (err) {
+      console.error('Chat error', err);
+      // Fallback in catch block as well
+      setMessages((m) => [
+        ...m,
+        { sender: 'ai', text: "The AI is temporarily unavailable." }
       ]);
     } finally {
       setLoading(false);

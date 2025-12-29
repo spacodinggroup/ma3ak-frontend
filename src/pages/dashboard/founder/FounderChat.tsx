@@ -31,28 +31,28 @@ export default function FounderChat() {
     setIsLoading(true);
 
     try {
-      const response = await generateAI({
+      const { reply } = await generateAI({
         tool: 'chat',
         prompt: message
       });
 
-      // Defensive check before accessing response.reply
-      if (response && typeof response.reply === 'string') {
-        setMessages(prev => [...prev, { role: 'assistant', content: response.reply }]);
-      } else {
-        // Fallback for unexpected response structure
-        console.error('Invalid AI response:', response);
-        setMessages(prev => [...prev, {
-          role: 'assistant',
-          content: "I'm having trouble processing that request right now. Please try again."
-        }]);
+      // 2. CHAT STATE SAFETY (Strict Guard)
+      if (typeof reply !== "string" || !reply.trim()) {
+        setMessages(m => [
+          ...m,
+          { role: 'assistant', content: "The AI could not generate a response." }
+        ]);
+        return;
       }
+
+      setMessages(prev => [...prev, { role: 'assistant', content: reply }]);
+
     } catch (error) {
       console.error('Chat error:', error);
       toast.error("Failed to send message. Please try again.");
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: "I encountered an error connecting to the server. Please check your connection and try again."
+        content: "The AI is temporarily unavailable."
       }]);
     } finally {
       setIsLoading(false);

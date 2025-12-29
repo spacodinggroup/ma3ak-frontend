@@ -28,34 +28,20 @@ export const sendStudentMessage = async (message: string) => {
     try {
         const res = await api.post("/student/chat", { message });
 
-        // 1. Try extracting direct reply (most likely path)
-        const directReply = res?.data?.reply;
-        if (typeof directReply === 'string' && directReply.trim().length > 0) {
-            return { reply: directReply };
-        }
+        const data = res.data;
 
-        // 2. Try extracting nested reply (legacy/data path)
-        const nestedReply = res?.data?.data?.reply;
-        if (typeof nestedReply === 'string' && nestedReply.trim().length > 0) {
-            return { reply: nestedReply };
-        }
+        // 1. SAFE AI RESPONSE PARSING (Strict Hierarchy)
+        const reply =
+            typeof data?.reply === "string" ? data.reply
+                : typeof data?.message === "string" ? data.message
+                    : typeof data?.data?.reply === "string" ? data.data.reply
+                        : "The AI is temporarily unavailable.";
 
-        // 3. Fallback for specific message field if reply is missing
-        const messageField = res?.data?.message;
-        if (typeof messageField === 'string' && messageField.trim().length > 0) {
-            return { reply: messageField };
-        }
+        return { reply };
 
-        // 4. Fallback if structure is oddly successful but empty
-        if (res?.status === 200) {
-            console.warn("Student Chat returned 200 but no recognized reply field:", res.data);
-            return { reply: "I processed your request, but I couldn't generate a text response." };
-        }
-
-        return { reply: "I received a response, but it was not in the expected format." };
     } catch (error) {
         console.error("Student Chat Error (Swallowed):", error);
-        return { reply: "I'm sorry, I'm having trouble connecting to your tutor right now. Please try again later." };
+        return { reply: "The AI is temporarily unavailable." };
     }
 };
 

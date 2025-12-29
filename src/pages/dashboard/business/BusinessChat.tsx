@@ -31,27 +31,28 @@ export default function BusinessChat() {
     setIsLoading(true);
 
     try {
-      const response = await generateAI({
+      const { reply } = await generateAI({
         tool: 'chat',
         prompt: message
       });
 
-      // Defensive check
-      if (response && typeof response.reply === 'string') {
-        setMessages(prev => [...prev, { role: 'assistant', content: response.reply }]);
-      } else {
-        console.error('Invalid AI response:', response);
-        setMessages(prev => [...prev, {
-          role: 'assistant',
-          content: "I'm having trouble providing advice right now. Please try again."
-        }]);
+      // 2. CHAT STATE SAFETY (Strict Guard)
+      if (typeof reply !== "string" || !reply.trim()) {
+        setMessages(m => [
+          ...m,
+          { role: 'assistant', content: "The AI could not generate a response." }
+        ]);
+        return;
       }
+
+      setMessages(prev => [...prev, { role: 'assistant', content: reply }]);
+
     } catch (error) {
       console.error('Chat error:', error);
       toast.error("Failed to send message. Please try again.");
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: "I encountered an error connecting to the business advisor. Please check your connection."
+        content: "The AI is temporarily unavailable."
       }]);
     } finally {
       setIsLoading(false);
