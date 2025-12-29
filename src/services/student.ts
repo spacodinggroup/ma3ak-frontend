@@ -103,3 +103,31 @@ export const uploadStudentNote = async (fromData: FormData) => {
     if (!res.data.success) throw new Error(res.data.message);
     return res.data.data;
 };
+
+// AI Study Plan Generation
+export interface StudyPlanItem {
+    subject: string;
+    date: string;
+    tasks: string[];
+}
+
+export const generateAIStudyPlan = async (payload: { subjects: string[] }) => {
+    try {
+        const res = await api.post("/ai/study-plan", { subjects: payload.subjects });
+
+        const data = res.data;
+
+        // Safe parsing of study plan array
+        const studyPlan = Array.isArray(data?.studyPlan)
+            ? data.studyPlan
+            : Array.isArray(data?.data?.studyPlan)
+                ? data.data.studyPlan
+                : [];
+
+        return { studyPlan };
+
+    } catch (error) {
+        console.error("AI Study Plan Error:", error);
+        return { studyPlan: [] };
+    }
+};
