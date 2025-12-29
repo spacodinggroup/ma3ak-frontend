@@ -1,6 +1,5 @@
 import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { MessageSquare, Send, Sparkles } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import { useState, useRef, useEffect } from 'react';
 import { generateAI } from '@/services/ai';
 import { toast } from 'sonner';
@@ -10,8 +9,10 @@ interface ChatMessage {
   content: string;
 }
 
+const SYSTEM_PROMPT = "You are an AI business advisor specializing in marketing, sales, and business growth. Respond directly to the business owner's questions without introductory phrases. Provide practical, actionable advice immediately.";
+
 export default function BusinessChat() {
-  const [message, setMessage] = useState('');
+  const [input, setInput] = useState('');
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -23,24 +24,29 @@ export default function BusinessChat() {
   }, [messages]);
 
   const handleSend = async () => {
-    if (!message.trim() || isLoading) return;
+    if (!input.trim() || isLoading) return;
 
-    const userMessage: ChatMessage = { role: 'user', content: message };
-    setMessages(prev => [...prev, userMessage]);
-    setMessage('');
+    const userMessage = input.trim();
+    setInput('');
+
+    const newUserMessage: ChatMessage = { role: 'user', content: userMessage };
+    setMessages(prev => [...prev, newUserMessage]);
     setIsLoading(true);
 
     try {
-      const { reply } = await generateAI({
-        tool: 'chat',
-        prompt: message
-      });
+      // Build messages array with system prompt
+      const apiMessages = [
+        { role: "system" as const, content: SYSTEM_PROMPT },
+        { role: "user" as const, content: userMessage }
+      ];
 
-      // 2. CHAT STATE SAFETY (Strict Guard)
+      const { reply } = await generateAI({ messages: apiMessages });
+
+      // CHAT STATE SAFETY
       if (typeof reply !== "string" || !reply.trim()) {
         setMessages(m => [
           ...m,
-          { role: 'assistant', content: "The AI could not generate a response." }
+          { role: 'assistant', content: "Sorry, I couldn't generate a response. Please try again." }
         ]);
         return;
       }
@@ -52,7 +58,7 @@ export default function BusinessChat() {
       toast.error("Failed to send message. Please try again.");
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: "The AI is temporarily unavailable."
+        content: "I'm having trouble connecting. Please try again."
       }]);
     } finally {
       setIsLoading(false);
@@ -93,18 +99,13 @@ export default function BusinessChat() {
             messages.map((msg, index) => (
               <div
                 key={index}
-                className={cn(
-                  "flex w-full",
-                  msg.role === 'user' ? "justify-end" : "justify-start"
-                )}
+                className={`flex w-full ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 <div
-                  className={cn(
-                    "max-w-[80%] rounded-lg px-4 py-3 text-sm",
-                    msg.role === 'user'
-                      ? "bg-role-business text-white"
-                      : "bg-muted text-foreground"
-                  )}
+                  className={`max-w-[80%] rounded-lg px-4 py-3 text-sm ${msg.role === 'user'
+                      ? 'bg-role-business text-white'
+                      : 'bg-muted text-foreground'
+                    }`}
                 >
                   {msg.content}
                 </div>
@@ -115,32 +116,27 @@ export default function BusinessChat() {
             <div className="flex justify-start">
               <div className="bg-muted text-foreground rounded-lg px-4 py-3 text-sm flex items-center gap-2">
                 <Sparkles className="w-4 h-4 animate-pulse" />
-                Analyzing market trends...
+                Analyzing...
               </div>
             </div>
           )}
         </div>
 
+        {/* Input - Native HTML */}
         <div className="flex gap-2 relative">
           <input
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Ask your AI Advisor anything..."
             disabled={isLoading}
-            className={cn(
-              "flex h-12 w-full rounded-md border border-input bg-background px-4 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm shadow-sm",
-              "flex-1 pr-12"
-            )}
+            className="flex h-12 w-full rounded-md border border-input bg-background px-4 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 shadow-sm flex-1 pr-12"
           />
           <button
             onClick={handleSend}
-            disabled={!message.trim() || isLoading}
-            className={cn(
-              "absolute right-2 top-2 bottom-2",
-              "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all duration-200 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50",
-              "text-role-business hover:bg-role-business/10 w-8 h-8"
-            )}
+            disabled={!input.trim() || isLoading}
+            className="absolute right-2 top-2 bottom-2 inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all duration-200 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 text-role-business hover:bg-role-business/10 w-8 h-8"
           >
             <Send className="w-4 h-4" />
           </button>

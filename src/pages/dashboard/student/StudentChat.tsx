@@ -1,62 +1,63 @@
 import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { Brain, Send } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import { useState } from 'react';
 import { sendStudentMessage } from '@/services/student';
 
-
 interface ChatMessage {
-  sender: 'student' | 'ai';
-  text: string;
+  role: 'user' | 'assistant';
+  content: string;
 }
 
+const SYSTEM_PROMPT = "You are a helpful AI tutor. Respond directly to the student's question without any introductory phrases like 'Here is my response' or 'Let me help you'. Just provide the answer or explanation directly.";
 
 export default function StudentChat() {
-  const [message, setMessage] = useState('');
+  const [input, setInput] = useState('');
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(false);
 
   const handleSend = async () => {
-    if (!message.trim() || loading) return;
-    const userMessage = message;
-    setMessage('');
+    if (!input.trim() || loading) return;
 
-    // 🔹 Add student message
-    setMessages((prev) => [
-      ...prev,
-      { sender: 'student', text: userMessage },
-    ]);
+    const userMessage = input.trim();
+    setInput('');
+
+    // Add user message to UI
+    const newUserMessage: ChatMessage = { role: 'user', content: userMessage };
+    setMessages(prev => [...prev, newUserMessage]);
     setLoading(true);
 
     try {
-      const { reply } = await sendStudentMessage(userMessage);
+      // Build messages array with system prompt
+      const apiMessages = [
+        { role: "system" as const, content: SYSTEM_PROMPT },
+        { role: "user" as const, content: userMessage }
+      ];
 
-      // 2. CHAT STATE SAFETY (Strict Guard)
+      const { reply } = await sendStudentMessage(apiMessages);
+
+      // CHAT STATE SAFETY
       if (typeof reply !== "string" || !reply.trim()) {
-        setMessages((m) => [
+        setMessages(m => [
           ...m,
-          { sender: 'ai', text: "The AI could not generate a response." }
+          { role: 'assistant', content: "Sorry, I couldn't generate a response. Please try again." }
         ]);
         return;
       }
 
-      setMessages((prev) => [
+      setMessages(prev => [
         ...prev,
-        { sender: 'ai', text: reply },
+        { role: 'assistant', content: reply }
       ]);
     } catch (err) {
       console.error('Chat error', err);
-      // Fallback in catch block as well
-      setMessages((m) => [
+      setMessages(m => [
         ...m,
-        { sender: 'ai', text: "The AI is temporarily unavailable." }
+        { role: 'assistant', content: "I'm having trouble connecting. Please try again." }
       ]);
     } finally {
       setLoading(false);
     }
   };
-
-
 
   return (
     <DashboardLayout>
@@ -72,7 +73,8 @@ export default function StudentChat() {
             </p>
           </div>
         </div>
-        {/* 🔹 Chat Messages */}
+
+        {/* Chat Messages */}
         <div className="flex-1 bg-card rounded-xl border border-border p-6 overflow-y-auto mb-4 space-y-4">
           {messages.length === 0 ? (
             <div className="text-center text-muted-foreground py-12">
@@ -86,12 +88,16 @@ export default function StudentChat() {
             messages.map((msg, idx) => (
               <div
                 key={idx}
-                className={`max-w-[80%] p-3 rounded-lg text-sm ${msg.sender === 'student'
-                  ? 'ml-auto bg-role-student text-white'
-                  : 'bg-secondary'
-                  }`}
+                className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
               >
-                {msg.text}
+                <div
+                  className={`max-w-[80%] p-3 rounded-lg text-sm ${msg.role === 'user'
+                      ? 'bg-role-student text-white'
+                      : 'bg-secondary'
+                    }`}
+                >
+                  {msg.content}
+                </div>
               </div>
             ))
           )}
@@ -99,27 +105,22 @@ export default function StudentChat() {
             <p className="text-sm text-muted-foreground">AI is thinking...</p>
           )}
         </div>
-        {/* 🔹 Input */}
+
+        {/* Input - Native HTML */}
         <div className="flex gap-2">
           <input
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
             placeholder="Ask your AI Tutor anything..."
-            className={cn(
-              "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
-              "flex-1"
-            )}
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 flex-1"
             onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+            disabled={loading}
           />
           <button
-            className={cn(
-              "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
-              "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/25",
-              "h-10 px-4 py-2",
-              "bg-role-student hover:bg-role-student/80"
-            )}
+            className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-role-student hover:bg-role-student/80 text-white shadow-lg h-10 px-4 py-2"
             onClick={handleSend}
-            disabled={loading}
+            disabled={loading || !input.trim()}
           >
             <Send className="w-4 h-4" />
           </button>

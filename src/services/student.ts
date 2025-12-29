@@ -24,13 +24,18 @@ export const getStudentCourses = async () => {
     return res.data.data;
 };
 
-export const sendStudentMessage = async (message: string) => {
+interface Message {
+    role: "system" | "user" | "assistant";
+    content: string;
+}
+
+export const sendStudentMessage = async (messages: Message[]) => {
     try {
-        const res = await api.post("/student/chat", { message });
+        const res = await api.post("/student/chat", { messages });
 
         const data = res.data;
 
-        // 1. SAFE AI RESPONSE PARSING (Strict Hierarchy)
+        // SAFE AI RESPONSE PARSING (Strict Hierarchy)
         const reply =
             typeof data?.reply === "string" ? data.reply
                 : typeof data?.message === "string" ? data.message
