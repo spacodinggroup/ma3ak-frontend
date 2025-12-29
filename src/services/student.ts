@@ -40,7 +40,13 @@ export const sendStudentMessage = async (message: string) => {
             return { reply: nestedReply };
         }
 
-        // 3. Fallback if structure is oddly successful but empty
+        // 3. Fallback for specific message field if reply is missing
+        const messageField = res?.data?.message;
+        if (typeof messageField === 'string' && messageField.trim().length > 0) {
+            return { reply: messageField };
+        }
+
+        // 4. Fallback if structure is oddly successful but empty
         if (res?.status === 200) {
             console.warn("Student Chat returned 200 but no recognized reply field:", res.data);
             return { reply: "I processed your request, but I couldn't generate a text response." };

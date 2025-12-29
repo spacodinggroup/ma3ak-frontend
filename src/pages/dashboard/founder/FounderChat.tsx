@@ -37,7 +37,7 @@ export default function FounderChat() {
       });
 
       // Defensive check before accessing response.reply
-      if (response && typeof response === 'object' && 'reply' in response) {
+      if (response && typeof response.reply === 'string') {
         setMessages(prev => [...prev, { role: 'assistant', content: response.reply }]);
       } else {
         // Fallback for unexpected response structure

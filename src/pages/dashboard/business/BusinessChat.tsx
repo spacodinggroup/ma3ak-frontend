@@ -37,7 +37,7 @@ export default function BusinessChat() {
       });
 
       // Defensive check
-      if (response && typeof response === 'object' && 'reply' in response) {
+      if (response && typeof response.reply === 'string') {
         setMessages(prev => [...prev, { role: 'assistant', content: response.reply }]);
       } else {
         console.error('Invalid AI response:', response);

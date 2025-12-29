@@ -4,13 +4,18 @@ import { api } from "./api";
 export const generateAI = async (payload: {
     tool: string;
     prompt: string;
+    // provider is optional, backend handles default
     provider?: "OPENAI" | "GROK";
 }) => {
     try {
-        const res = await api.post("/ai/generate", {
-            provider: payload.provider || "OPENAI",
+        // Changed endpoint to /ai/chat to match requirements
+        // Sending 'message' instead of 'prompt'
+        const res = await api.post("/ai/chat", {
+            message: payload.prompt,
+            // Pass other metadata if needed by backend, e.g. tool/provider
+            // keeping them just in case backend uses them for context
             tool: payload.tool,
-            prompt: payload.prompt,
+            provider: payload.provider || "OPENAI"
         });
 
         // 1. Try extracting direct reply (most likely path)

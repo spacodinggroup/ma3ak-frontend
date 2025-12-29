@@ -32,10 +32,11 @@ export default function StudentChat() {
       const data = await sendStudentMessage(userMessage);
 
       // 🔹 Add AI reply safely
-      if (data && typeof data === 'object' && 'reply' in data) {
+      // Now using defensive check + fallback string if empty
+      if (data && typeof data.reply === 'string') {
         setMessages((prev) => [
           ...prev,
-          { sender: 'ai', text: data.reply },
+          { sender: 'ai', text: data.reply || "I'm not sure how to respond to that." },
         ]);
       } else {
         console.error('Invalid Student Chat response:', data);
