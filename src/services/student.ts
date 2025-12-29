@@ -22,12 +22,22 @@ export const getStudentCourses = async () => {
     const res = await api.get("/student/courses");
     if (!res.data.success) throw new Error(res.data.message);
     return res.data.data;
-};  
+};
 
 export const sendStudentMessage = async (message: string) => {
-    const res = await api.post("/student/chat", { message });
-    if (!res.data.success) throw new Error(res.data.message);
-    return res.data.data;
+    try {
+        const res = await api.post("/student/chat", { message });
+        if (!res.data.success) throw new Error(res.data.message);
+
+        const data = res.data.data;
+        if (typeof data === 'object' && data !== null && 'reply' in data) {
+            return { reply: String(data.reply) };
+        }
+        return { reply: "I received a response, but it was not in the expected format." };
+    } catch (error) {
+        console.error("Student Chat Error:", error);
+        return { reply: "I'm sorry, I encountered an error connecting to your tutor. Please try again." };
+    }
 };
 
 export const getStudentNotes = async () => {

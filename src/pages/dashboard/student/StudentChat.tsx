@@ -17,24 +17,39 @@ export default function StudentChat() {
   const [loading, setLoading] = useState(false);
 
   const handleSend = async () => {
-    if (!message.trim()) return;
+    if (!message.trim() || loading) return;
     const userMessage = message;
     setMessage('');
+
     // 🔹 Add student message
     setMessages((prev) => [
       ...prev,
       { sender: 'student', text: userMessage },
     ]);
     setLoading(true);
+
     try {
       const data = await sendStudentMessage(userMessage);
-      // 🔹 Add AI reply
+
+      // 🔹 Add AI reply safely
+      if (data && typeof data === 'object' && 'reply' in data) {
+        setMessages((prev) => [
+          ...prev,
+          { sender: 'ai', text: data.reply },
+        ]);
+      } else {
+        console.error('Invalid Student Chat response:', data);
+        setMessages((prev) => [
+          ...prev,
+          { sender: 'ai', text: "I'm having trouble understanding. Could you please rephrase?" },
+        ]);
+      }
+    } catch (err) {
+      console.error('Chat error', err);
       setMessages((prev) => [
         ...prev,
-        { sender: 'ai', text: data.reply },
+        { sender: 'ai', text: "I'm having trouble connecting right now. Please try again later." },
       ]);
-    } catch (err) {
-      console.error('Chat error', err)
     } finally {
       setLoading(false);
     }
@@ -71,8 +86,8 @@ export default function StudentChat() {
               <div
                 key={idx}
                 className={`max-w-[80%] p-3 rounded-lg text-sm ${msg.sender === 'student'
-                    ? 'ml-auto bg-role-student text-white'
-                    : 'bg-secondary'
+                  ? 'ml-auto bg-role-student text-white'
+                  : 'bg-secondary'
                   }`}
               >
                 {msg.text}
