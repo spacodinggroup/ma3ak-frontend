@@ -1,128 +1,293 @@
 import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
-import { Clock, Play, Pause, RotateCcw } from 'lucide-react';
+import { Clock, Play, Pause, Square, BookOpen, Trophy, History, Timer, AlertCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useState, useEffect } from 'react';
-import { getStudentTimer } from '@/services/student';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { getStudentTimer, getStudentSubjects } from '@/services/student';
+
+interface Subject {
+  id: string;
+  name: string;
+  color: string;
+}
+
+interface StudySession {
+  id: string;
+  subject: string;
+  durationSeconds: number;
+  timestamp: string;
+}
 
 export default function StudentTimer() {
   const [isRunning, setIsRunning] = useState(false);
-  const [minutes, setMinutes] = useState(25);
-  const [seconds, setSeconds] = useState(0);
-  const [timerStats, setTimerStats] = useState({
-    sessions: 4,
-    focusTime: '1h 45m',
-    breaks: 3,
-  });
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  const [activeSubject, setActiveSubject] = useState<string>('');
+  const [subjects, setSubjects] = useState<Subject[]>([]);
+  const [sessions, setSessions] = useState<StudySession[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Load Persistence & Initial Data
   useEffect(() => {
-    const loadTimerStats = async () => {
+    const init = async () => {
       try {
-        const data = await getStudentTimer();
-        setTimerStats(data);
+        setLoading(true);
+        // Load Subjects
+        const subs = await getStudentSubjects();
+        setSubjects(Array.isArray(subs) ? subs : []);
+
+        // Load Persistence
+        const saved = localStorage.getItem('study_timer_state');
+        if (saved) {
+          const { seconds, subject, status, lastTimestamp } = JSON.parse(saved);
+          setActiveSubject(subject || '');
+
+          if (status === 'running') {
+            const now = Date.now();
+            const diff = Math.floor((now - lastTimestamp) / 1000);
+            setElapsedSeconds(seconds + diff);
+            setIsRunning(true);
+          } else {
+            setElapsedSeconds(seconds);
+          }
+        }
+
+        // Load Sessions (Mock or from API if available)
+        // For now, using localStorage to track local history
+        const savedSessions = localStorage.getItem('study_sessions_history');
+        if (savedSessions) {
+          setSessions(JSON.parse(savedSessions));
+        }
+
       } catch (err) {
-        console.error("Error loading timer stats", err);
+        console.error("Timer Init Error:", err);
       } finally {
         setLoading(false);
       }
     };
-    loadTimerStats();
+    init();
   }, []);
+
+  // Timer Tick
+  useEffect(() => {
+    if (isRunning) {
+      timerRef.current = setInterval(() => {
+        setElapsedSeconds(prev => prev + 1);
+      }, 1000);
+    } else {
+      if (timerRef.current) clearInterval(timerRef.current);
+    }
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [isRunning]);
+
+  // Persist State
+  useEffect(() => {
+    const state = {
+      seconds: elapsedSeconds,
+      subject: activeSubject,
+      status: isRunning ? 'running' : 'paused',
+      lastTimestamp: Date.now()
+    };
+    localStorage.setItem('study_timer_state', JSON.stringify(state));
+  }, [elapsedSeconds, isRunning, activeSubject]);
+
+  const toggleTimer = () => {
+    if (!activeSubject && !isRunning) {
+      alert("Please select a subject first!");
+      return;
+    }
+    setIsRunning(!isRunning);
+  };
+
+  const stopTimer = () => {
+    if (elapsedSeconds > 0) {
+      const newSession: StudySession = {
+        id: Math.random().toString(36).substr(2, 9),
+        subject: activeSubject || 'Other',
+        durationSeconds: elapsedSeconds,
+        timestamp: new Date().toISOString()
+      };
+
+      const updatedSessions = [newSession, ...sessions.slice(0, 4)];
+      setSessions(updatedSessions);
+      localStorage.setItem('study_sessions_history', JSON.stringify(updatedSessions));
+    }
+
+    setIsRunning(false);
+    setElapsedSeconds(0);
+    localStorage.removeItem('study_timer_state');
+  };
+
+  const formatTime = (totalSeconds: number) => {
+    const hrs = Math.floor(totalSeconds / 3600);
+    const mins = Math.floor((totalSeconds % 3600) / 60);
+    const secs = totalSeconds % 60;
+
+    if (hrs > 0) {
+      return `${hrs}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    }
+    return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+  };
+
+  const currentSubjectColor = subjects.find(s => s.name === activeSubject)?.color || 'role-student';
+
+  if (loading) {
+    return (
+      <DashboardLayout>
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="w-12 h-12 border-4 border-role-student border-t-transparent rounded-full animate-spin" />
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout>
-      <div className="max-w-2xl mx-auto space-y-6">
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-xl bg-role-student/20 flex items-center justify-center">
-            <Clock className="w-6 h-6 text-role-student" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold">Study Timer</h1>
-            <p className="text-muted-foreground">Focus with Pomodoro technique</p>
+      <div className="max-w-4xl mx-auto space-y-8">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-role-student/20 flex items-center justify-center">
+              <Timer className="w-8 h-8 text-role-student" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-black">Focus Timer</h1>
+              <p className="text-muted-foreground font-medium">Deep work for better results</p>
+            </div>
           </div>
         </div>
 
-        <div className="bg-card rounded-xl border border-border p-8 text-center">
-          <div className="text-8xl font-bold mb-8 font-mono">
-            {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
-          </div>
+        <div className="grid lg:grid-cols-[1fr_350px] gap-8">
+          <div className="space-y-8">
+            {/* Timer Card */}
+            <div className={cn(
+              "bg-card rounded-[2.5rem] border-4 p-12 text-center transition-all duration-500 relative overflow-hidden",
+              isRunning ? "border-role-student/30 shadow-2xl shadow-role-student/10" : "border-border shadow-lg"
+            )}>
+              {isRunning && (
+                <div className="absolute inset-0 bg-role-student/5 animate-pulse transition-opacity" />
+              )}
 
-          <div className="flex items-center justify-center gap-4">
-            <button
-              className={cn(
-                "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
-                "border border-border bg-transparent hover:bg-secondary hover:text-secondary-foreground",
-                "h-12 rounded-lg px-8 text-base"
-              )}
-              onClick={() => {
-                setMinutes(25);
-                setSeconds(0);
-                setIsRunning(false);
-              }}
-            >
-              <RotateCcw className="w-5 h-5" />
-            </button>
-            <button
-              className={cn(
-                "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
-                "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/25",
-                "h-12 rounded-lg px-8 text-base",
-                "bg-role-student hover:bg-role-student/80 px-8"
-              )}
-              onClick={() => setIsRunning(!isRunning)}
-            >
-              {isRunning ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
-            </button>
-          </div>
+              <div className="relative z-10">
+                <div className="flex justify-center mb-8">
+                  <div className="px-4 py-1.5 rounded-full bg-muted border border-border text-xs font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+                    <BookOpen className="w-3.5 h-3.5" />
+                    {activeSubject || 'Select a Subject'}
+                  </div>
+                </div>
 
-          <div className="flex justify-center gap-4 mt-8">
-            <button
-              className={cn(
-                "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
-                "hover:bg-secondary hover:text-secondary-foreground",
-                "h-10 px-4 py-2"
-              )}
-              onClick={() => { setMinutes(25); setSeconds(0); }}
-            >
-              25 min
-            </button>
-            <button
-              className={cn(
-                "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
-                "hover:bg-secondary hover:text-secondary-foreground",
-                "h-10 px-4 py-2"
-              )}
-              onClick={() => { setMinutes(45); setSeconds(0); }}
-            >
-              45 min
-            </button>
-            <button
-              className={cn(
-                "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
-                "hover:bg-secondary hover:text-secondary-foreground",
-                "h-10 px-4 py-2"
-              )}
-              onClick={() => { setMinutes(60); setSeconds(0); }}
-            >
-              60 min
-            </button>
-          </div>
-        </div>
+                <div className="text-[7rem] md:text-[9rem] font-black font-mono leading-none tracking-tighter mb-12 tabular-nums">
+                  {formatTime(elapsedSeconds)}
+                </div>
 
-        <div className="bg-card rounded-xl border border-border p-6">
-          <h3 className="font-semibold mb-4">Today's Stats</h3>
-          <div className="grid grid-cols-3 gap-4 text-center">
-            <div>
-              <p className="text-2xl font-bold">{loading ? '...' : timerStats.sessions}</p>
-              <p className="text-sm text-muted-foreground">Sessions</p>
+                <div className="flex items-center justify-center gap-4">
+                  <button
+                    onClick={toggleTimer}
+                    className={cn(
+                      "w-20 h-20 rounded-full flex items-center justify-center transition-all duration-300 shadow-xl",
+                      isRunning ? "bg-amber-100 text-amber-600 hover:bg-amber-200" : "bg-role-student text-white hover:scale-105 shadow-role-student/25"
+                    )}
+                  >
+                    {isRunning ? <Pause className="w-8 h-8 fill-current" /> : <Play className="w-8 h-8 fill-current ml-1" />}
+                  </button>
+
+                  {isRunning || elapsedSeconds > 0 ? (
+                    <button
+                      onClick={stopTimer}
+                      className="w-16 h-16 rounded-full bg-muted text-muted-foreground flex items-center justify-center hover:bg-rose-50 hover:text-rose-500 transition-all"
+                    >
+                      <Square className="w-6 h-6 fill-current" />
+                    </button>
+                  ) : null}
+                </div>
+              </div>
             </div>
-            <div>
-              <p className="text-2xl font-bold">{loading ? '...' : timerStats.focusTime}</p>
-              <p className="text-sm text-muted-foreground">Focus Time</p>
+
+            {/* Subject Selector */}
+            <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
+              <h3 className="text-lg font-bold mb-6 flex items-center gap-2">
+                <BookOpen className="w-5 h-5 text-role-student" />
+                Select Subject
+              </h3>
+              <div className="flex flex-wrap gap-3">
+                {subjects.length > 0 ? subjects.map((sub) => (
+                  <button
+                    key={sub.id}
+                    disabled={isRunning}
+                    onClick={() => setActiveSubject(sub.name)}
+                    className={cn(
+                      "px-6 py-2.5 rounded-xl border-2 font-bold transition-all text-sm",
+                      activeSubject === sub.name
+                        ? "border-role-student bg-role-student/5 text-role-student"
+                        : "border-border hover:border-role-student/30 text-muted-foreground",
+                      isRunning && "opacity-50 cursor-not-allowed"
+                    )}
+                  >
+                    {sub.name}
+                  </button>
+                )) : (
+                  <div className="text-sm text-muted-foreground p-4 text-center w-full border border-dashed border-border rounded-xl">
+                    No subjects found. Add subjects in Settings or Progress.
+                  </div>
+                )}
+              </div>
             </div>
-            <div>
-              <p className="text-2xl font-bold">{loading ? '...' : timerStats.breaks}</p>
-              <p className="text-sm text-muted-foreground">Breaks</p>
+          </div>
+
+          <div className="space-y-6">
+            {/* Daily Summary */}
+            <div className="bg-card rounded-2xl border border-border p-6 shadow-sm overflow-hidden relative">
+              <div className="absolute -right-4 -top-4 w-24 h-24 bg-role-student/5 rounded-full blur-2xl" />
+              <h3 className="font-bold mb-6 flex items-center gap-2">
+                <History className="w-5 h-5 text-role-student" />
+                Recent Sessions
+              </h3>
+
+              <div className="space-y-4">
+                {sessions.length > 0 ? sessions.map((session) => (
+                  <div key={session.id} className="flex items-center justify-between p-3 rounded-xl bg-muted/30 border border-border/50">
+                    <div>
+                      <p className="font-bold text-sm">{session.subject}</p>
+                      <p className="text-[10px] text-muted-foreground font-semibold uppercase">
+                        {new Date(session.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </p>
+                    </div>
+                    <div className="text-sm font-black text-role-student">
+                      {Math.floor(session.durationSeconds / 60)} min
+                    </div>
+                  </div>
+                )) : (
+                  <div className="text-center py-8">
+                    <p className="text-xs text-muted-foreground font-medium">No sessions logged yet today</p>
+                  </div>
+                )}
+              </div>
+
+              {sessions.length > 0 && (
+                <div className="mt-8 pt-6 border-t border-border">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">Total Focus</h4>
+                      <p className="text-2xl font-black">
+                        {Math.floor(sessions.reduce((acc, s) => acc + s.durationSeconds, 0) / 60)} <span className="text-xs font-bold text-muted-foreground uppercase">min</span>
+                      </p>
+                    </div>
+                    <div className="w-12 h-12 rounded-full bg-role-student/10 flex items-center justify-center">
+                      <Trophy className="w-6 h-6 text-role-student" />
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="p-6 bg-role-student rounded-2xl text-white shadow-xl shadow-role-student/20 relative overflow-hidden group">
+              <div className="absolute right-0 top-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-110" />
+              <AlertCircle className="w-6 h-6 mb-4 opacity-80" />
+              <h4 className="font-bold mb-1">Stay Focused!</h4>
+              <p className="text-xs opacity-90 leading-relaxed font-medium">
+                Try setting small goals for each session. 25 minutes of deep focus is more productive than 2 hours of distracted study.
+              </p>
             </div>
           </div>
         </div>

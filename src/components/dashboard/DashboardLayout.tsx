@@ -1,19 +1,14 @@
-import { ReactNode } from 'react';
+import { Outlet, Navigate } from 'react-router-dom';
 import { StudentSidebar } from './StudentSidebar';
 import { BusinessSidebar } from './BusinessSidebar';
 import { FounderSidebar } from './FounderSidebar';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { SidebarProvider, useSidebar } from '@/contexts/SidebarContext';
-import { Navigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { UserRole } from '@/types/user';
 
-interface DashboardLayoutProps {
-  children: ReactNode;
-}
-
-function DashboardContent({ children }: { children: ReactNode }) {
+function DashboardContent() {
   const { user } = useAuth();
   const { isRTL } = useLanguage();
   const { collapsed } = useSidebar();
@@ -40,13 +35,13 @@ function DashboardContent({ children }: { children: ReactNode }) {
           ? (collapsed ? 'mr-[72px]' : 'mr-64')
           : (collapsed ? 'ml-[72px]' : 'ml-64')
       )}>
-        {children}
+        <Outlet />
       </main>
     </div>
   );
 }
 
-export function DashboardLayout({ children }: DashboardLayoutProps) {
+export function DashboardLayout() {
   const { isAuthenticated } = useAuth();
 
   if (!isAuthenticated) {
@@ -55,7 +50,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
   return (
     <SidebarProvider>
-      <DashboardContent>{children}</DashboardContent>
+      <DashboardContent />
     </SidebarProvider>
   );
 }

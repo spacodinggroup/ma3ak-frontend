@@ -1,7 +1,8 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useSidebar } from '@/contexts/SidebarContext';
+import { ROUTES } from '@/constants/routes';
 import {
   Sparkles,
   LayoutDashboard,
@@ -25,50 +26,53 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 const navItems = [
-  { icon: LayoutDashboard, label: 'Dashboard', href: '/dashboard/student' },
-  { icon: Brain, label: 'AI Tutor', href: '/dashboard/student/chat' },
-  { icon: BookOpen, label: 'Subjects', href: '/dashboard/student/subjects' },
-  { icon: Calendar, label: 'Study Plan', href: '/dashboard/student/plan' },
-  { icon: FileText, label: 'Notes & PDFs', href: '/dashboard/student/notes' },
-  { icon: FlaskConical, label: 'Practice Tests', href: '/dashboard/student/practice' },
-  { icon: Target, label: 'Exams', href: '/dashboard/student/exams' },
-  { icon: Trophy, label: 'Progress', href: '/dashboard/student/progress' },
-  { icon: Clock, label: 'Study Timer', href: '/dashboard/student/timer' },
-  { icon: Settings, label: 'Settings', href: '/dashboard/student/settings' },
+  { icon: LayoutDashboard, label: 'Dashboard', href: ROUTES.STUDENT.HOME },
+  { icon: Brain, label: 'AI Tutor', href: ROUTES.STUDENT.CHAT },
+  { icon: BookOpen, label: 'Subjects', href: ROUTES.STUDENT.SUBJECTS },
+  { icon: Calendar, label: 'Study Plan', href: ROUTES.STUDENT.PLAN },
+  { icon: FileText, label: 'Notes & PDFs', href: ROUTES.STUDENT.NOTES },
+  { icon: FlaskConical, label: 'Practice Tests', href: ROUTES.STUDENT.PRACTICE },
+  { icon: Target, label: 'Exams', href: ROUTES.STUDENT.EXAMS },
+  { icon: Trophy, label: 'Progress', href: ROUTES.STUDENT.PROGRESS },
+  { icon: Clock, label: 'Study Timer', href: ROUTES.STUDENT.TIMER },
+  { icon: Settings, label: 'Settings', href: ROUTES.STUDENT.SETTINGS },
 ];
 
 export function StudentSidebar() {
   const { user, logout } = useAuth();
   const { isRTL } = useLanguage();
   const { collapsed, toggle } = useSidebar();
-  const location = useLocation();
 
   const NavItem = ({ item }: { item: { icon: any; label: string; href: string } }) => {
-    const isActive = location.pathname === item.href;
     const Icon = item.icon;
 
     const content = (
-      <Link
+      <NavLink
         to={item.href}
-        className={cn(
-          'flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group',
+        end={item.href === ROUTES.STUDENT.HOME}
+        className={({ isActive }) => cn(
+          'flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group relative',
           isActive
-            ? 'bg-role-student/15 text-role-student shadow-sm'
+            ? 'bg-role-student/15 text-role-student shadow-sm active-sidebar-item'
             : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground',
           collapsed && 'justify-center px-2'
         )}
       >
-        <Icon className={cn(
-          'w-5 h-5 shrink-0 transition-transform duration-200',
-          !isActive && 'group-hover:scale-110'
-        )} />
-        {!collapsed && (
-          <span className="text-sm font-medium truncate">{item.label}</span>
+        {({ isActive }) => (
+          <>
+            <Icon className={cn(
+              'w-5 h-5 shrink-0 transition-transform duration-200',
+              !isActive && 'group-hover:scale-110'
+            )} />
+            {!collapsed && (
+              <span className="text-sm font-medium truncate">{item.label}</span>
+            )}
+            {isActive && !collapsed && (
+              <div className="w-1.5 h-1.5 rounded-full ml-auto bg-role-student" />
+            )}
+          </>
         )}
-        {isActive && !collapsed && (
-          <div className="w-1.5 h-1.5 rounded-full ml-auto bg-role-student" />
-        )}
-      </Link>
+      </NavLink>
     );
 
     if (collapsed) {

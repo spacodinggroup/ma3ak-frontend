@@ -1,7 +1,8 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useSidebar } from '@/contexts/SidebarContext';
+import { ROUTES } from '@/constants/routes';
 import {
   LayoutDashboard,
   LogOut,
@@ -24,51 +25,54 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 const navItems = [
-  { icon: LayoutDashboard, label: 'Dashboard', href: '/dashboard/founder' },
-  { icon: MessageSquare, label: 'AI Co-Founder', href: '/dashboard/founder/chat' },
-  { icon: Lightbulb, label: 'Idea Validation', href: '/dashboard/founder/validate' },
-  { icon: GitBranch, label: 'Roadmap', href: '/dashboard/founder/roadmap' },
-  { icon: Code2, label: 'Tech Stack', href: '/dashboard/founder/tech' },
-  { icon: Milestone, label: 'Milestones', href: '/dashboard/founder/milestones' },
-  { icon: Target, label: 'OKRs', href: '/dashboard/founder/okrs' },
-  { icon: Users, label: 'Team', href: '/dashboard/founder/team' },
-  { icon: FileText, label: 'Pitch Deck', href: '/dashboard/founder/pitch' },
-  { icon: BarChart3, label: 'Metrics', href: '/dashboard/founder/metrics' },
-  { icon: Settings, label: 'Settings', href: '/dashboard/founder/settings' },
+  { icon: LayoutDashboard, label: 'Dashboard', href: ROUTES.FOUNDER.HOME },
+  { icon: MessageSquare, label: 'AI Co-Founder', href: ROUTES.FOUNDER.CHAT },
+  { icon: Lightbulb, label: 'Idea Validation', href: ROUTES.FOUNDER.VALIDATE },
+  { icon: GitBranch, label: 'Roadmap', href: ROUTES.FOUNDER.ROADMAP },
+  { icon: Code2, label: 'Tech Stack', href: ROUTES.FOUNDER.TECH },
+  { icon: Milestone, label: 'Milestones', href: ROUTES.FOUNDER.MILESTONES },
+  { icon: Target, label: 'OKRs', href: ROUTES.FOUNDER.OKRS },
+  { icon: Users, label: 'Team', href: ROUTES.FOUNDER.TEAM },
+  { icon: FileText, label: 'Pitch Deck', href: ROUTES.FOUNDER.PITCH },
+  { icon: BarChart3, label: 'Metrics', href: ROUTES.FOUNDER.METRICS },
+  { icon: Settings, label: 'Settings', href: ROUTES.FOUNDER.SETTINGS },
 ];
 
 export function FounderSidebar() {
   const { user, logout } = useAuth();
   const { isRTL } = useLanguage();
   const { collapsed, toggle } = useSidebar();
-  const location = useLocation();
 
   const NavItem = ({ item }: { item: { icon: any; label: string; href: string } }) => {
-    const isActive = location.pathname === item.href;
     const Icon = item.icon;
 
     const content = (
-      <Link
+      <NavLink
         to={item.href}
-        className={cn(
-          'flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group',
+        end={item.href === ROUTES.FOUNDER.HOME}
+        className={({ isActive }) => cn(
+          'flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group relative',
           isActive
-            ? 'bg-role-founder/15 text-role-founder shadow-sm'
+            ? 'bg-role-founder/15 text-role-founder shadow-sm active-sidebar-item'
             : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground',
           collapsed && 'justify-center px-2'
         )}
       >
-        <Icon className={cn(
-          'w-5 h-5 shrink-0 transition-transform duration-200',
-          !isActive && 'group-hover:scale-110'
-        )} />
-        {!collapsed && (
-          <span className="text-sm font-medium truncate">{item.label}</span>
+        {({ isActive }) => (
+          <>
+            <Icon className={cn(
+              'w-5 h-5 shrink-0 transition-transform duration-200',
+              !isActive && 'group-hover:scale-110'
+            )} />
+            {!collapsed && (
+              <span className="text-sm font-medium truncate">{item.label}</span>
+            )}
+            {isActive && !collapsed && (
+              <div className="w-1.5 h-1.5 rounded-full ml-auto bg-role-founder" />
+            )}
+          </>
         )}
-        {isActive && !collapsed && (
-          <div className="w-1.5 h-1.5 rounded-full ml-auto bg-role-founder" />
-        )}
-      </Link>
+      </NavLink>
     );
 
     if (collapsed) {

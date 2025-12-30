@@ -37,7 +37,7 @@ export default function StudentNotes() {
       const { notes: extractedNotes } = await uploadStudentNote(formData);
 
       if (Array.isArray(extractedNotes) && extractedNotes.length > 0) {
-        setNotes(extractedNotes || []);
+        setNotes(extractedNotes);
       } else {
         setNotes([]);
         setError('Unable to process PDF. The file may be empty or unreadable.');
@@ -48,9 +48,13 @@ export default function StudentNotes() {
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
-    } catch (err) {
-      console.error('Upload error:', err);
-      setError(err instanceof Error ? err.message : 'Unable to process PDF. Please try again.');
+    } catch (err: any) {
+      console.error('Upload error:', {
+        message: err?.message,
+        response: err?.response?.data,
+        status: err?.response?.status
+      });
+      setError(err?.response?.data?.message || err?.message || 'Unable to process PDF. Please try again.');
       setNotes([]);
     } finally {
       setLoading(false);
@@ -125,14 +129,14 @@ export default function StudentNotes() {
         )}
 
         {/* Notes Display */}
-        {notes && notes.length > 0 && (
+        {Array.isArray(notes) && notes.length > 0 && (
           <div className="bg-card rounded-xl border border-border p-6">
             <h2 className="text-lg font-semibold mb-4">
               Extracted Notes ({notes.length})
             </h2>
 
             <ul className="space-y-2">
-              {notes?.map((note, index) => (
+              {notes.map((note, index) => (
                 <li
                   key={index}
                   className="bg-secondary/30 rounded-lg px-4 py-3 text-sm border border-border/50"
@@ -150,7 +154,7 @@ export default function StudentNotes() {
         )}
 
         {/* Empty State */}
-        {!loading && notes.length === 0 && !error && (
+        {!loading && Array.isArray(notes) && notes.length === 0 && !error && (
           <div className="bg-card rounded-xl border border-border p-8 text-center">
             <FileText className="w-12 h-12 mx-auto mb-3 text-muted-foreground opacity-50" />
             <p className="text-muted-foreground">No notes extracted yet.</p>

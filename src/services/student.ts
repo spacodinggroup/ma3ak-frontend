@@ -44,8 +44,12 @@ export const sendStudentMessage = async (messages: Message[]) => {
 
         return { reply };
 
-    } catch (error) {
-        console.error("Student Chat Error (Swallowed):", error);
+    } catch (error: any) {
+        console.error("Student Chat Error:", {
+            message: error?.message,
+            response: error?.response?.data,
+            status: error?.response?.status
+        });
         return { reply: "The AI is temporarily unavailable." };
     }
 };
@@ -126,8 +130,12 @@ export const generateAIStudyPlan = async (payload: { subjects: string[] }) => {
 
         return { studyPlan };
 
-    } catch (error) {
-        console.error("AI Study Plan Error:", error);
+    } catch (error: any) {
+        console.error("AI Study Plan Error:", {
+            message: error?.message,
+            response: error?.response?.data,
+            status: error?.response?.status
+        });
         return { studyPlan: [] };
     }
 };

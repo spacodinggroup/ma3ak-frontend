@@ -1,7 +1,8 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useSidebar } from '@/contexts/SidebarContext';
+import { ROUTES } from '@/constants/routes';
 import {
   LayoutDashboard,
   LogOut,
@@ -26,51 +27,54 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 const navItems = [
-  { icon: LayoutDashboard, label: 'Dashboard', href: '/dashboard/business' },
-  { icon: MessageSquare, label: 'AI Advisor', href: '/dashboard/business/chat' },
-  { icon: TrendingUp, label: 'Sales Overview', href: '/dashboard/business/sales' },
-  { icon: Megaphone, label: 'Marketing', href: '/dashboard/business/marketing' },
-  { icon: PenTool, label: 'Content Studio', href: '/dashboard/business/content' },
-  { icon: Users, label: 'Customers', href: '/dashboard/business/customers' },
-  { icon: Target, label: 'Tasks & Goals', href: '/dashboard/business/goals' },
-  { icon: LineChart, label: 'Analytics', href: '/dashboard/business/analytics' },
-  { icon: FileText, label: 'Reports', href: '/dashboard/business/reports' },
-  { icon: CalendarDays, label: 'Calendar', href: '/dashboard/business/calendar' },
-  { icon: Settings, label: 'Settings', href: '/dashboard/business/settings' },
+  { icon: LayoutDashboard, label: 'Dashboard', href: ROUTES.BUSINESS.HOME },
+  { icon: MessageSquare, label: 'AI Advisor', href: ROUTES.BUSINESS.CHAT },
+  { icon: TrendingUp, label: 'Sales Overview', href: ROUTES.BUSINESS.SALES },
+  { icon: Megaphone, label: 'Marketing', href: ROUTES.BUSINESS.MARKETING },
+  { icon: PenTool, label: 'Content Studio', href: ROUTES.BUSINESS.CONTENT },
+  { icon: Users, label: 'Customers', href: ROUTES.BUSINESS.CUSTOMERS },
+  { icon: Target, label: 'Tasks & Goals', href: ROUTES.BUSINESS.GOALS },
+  { icon: LineChart, label: 'Analytics', href: ROUTES.BUSINESS.ANALYTICS },
+  { icon: FileText, label: 'Reports', href: ROUTES.BUSINESS.REPORTS },
+  { icon: CalendarDays, label: 'Calendar', href: ROUTES.BUSINESS.CALENDAR },
+  { icon: Settings, label: 'Settings', href: ROUTES.BUSINESS.SETTINGS },
 ];
 
 export function BusinessSidebar() {
   const { user, logout } = useAuth();
   const { isRTL } = useLanguage();
   const { collapsed, toggle } = useSidebar();
-  const location = useLocation();
 
   const NavItem = ({ item }: { item: { icon: any; label: string; href: string } }) => {
-    const isActive = location.pathname === item.href;
     const Icon = item.icon;
 
     const content = (
-      <Link
+      <NavLink
         to={item.href}
-        className={cn(
-          'flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group',
+        end={item.href === ROUTES.BUSINESS.HOME}
+        className={({ isActive }) => cn(
+          'flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group relative',
           isActive
-            ? 'bg-role-business/15 text-role-business shadow-sm'
+            ? 'bg-role-business/15 text-role-business shadow-sm active-sidebar-item'
             : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground',
           collapsed && 'justify-center px-2'
         )}
       >
-        <Icon className={cn(
-          'w-5 h-5 shrink-0 transition-transform duration-200',
-          !isActive && 'group-hover:scale-110'
-        )} />
-        {!collapsed && (
-          <span className="text-sm font-medium truncate">{item.label}</span>
+        {({ isActive }) => (
+          <>
+            <Icon className={cn(
+              'w-5 h-5 shrink-0 transition-transform duration-200',
+              !isActive && 'group-hover:scale-110'
+            )} />
+            {!collapsed && (
+              <span className="text-sm font-medium truncate">{item.label}</span>
+            )}
+            {isActive && !collapsed && (
+              <div className="w-1.5 h-1.5 rounded-full ml-auto bg-role-business" />
+            )}
+          </>
         )}
-        {isActive && !collapsed && (
-          <div className="w-1.5 h-1.5 rounded-full ml-auto bg-role-business" />
-        )}
-      </Link>
+      </NavLink>
     );
 
     if (collapsed) {
