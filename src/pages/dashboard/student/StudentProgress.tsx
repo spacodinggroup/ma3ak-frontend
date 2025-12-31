@@ -1,4 +1,3 @@
-import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { Trophy, TrendingUp, Clock, Target, Rocket, Award, Star, Lightbulb, ArrowUpRight } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { useEffect, useState } from 'react';
@@ -52,8 +51,7 @@ export default function StudentProgress() {
   }, []);
 
   return (
-    <DashboardLayout>
-      <div className="max-w-7xl mx-auto space-y-8 animate-in slide-in-from-bottom-4 duration-500">
+    <div className="max-w-7xl mx-auto space-y-8 animate-in slide-in-from-bottom-4 duration-500">
 
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -77,6 +75,12 @@ export default function StudentProgress() {
             </div>
           </div>
         </div>
+
+        {error && (
+          <div className="bg-destructive/10 border border-destructive/30 rounded-lg p-4">
+            <p className="text-sm text-destructive font-medium">{error}</p>
+          </div>
+        )}
 
         {/* Global Stats Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -212,7 +216,6 @@ export default function StudentProgress() {
             </div>
           </div>
         </div>
-      </div>
-    </DashboardLayout>
+    </div>
   );
 }

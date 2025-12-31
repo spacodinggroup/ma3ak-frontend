@@ -1,4 +1,3 @@
-import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { PenTool, Sparkles, Copy, FileText } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Textarea } from '@/components/ui/textarea';
@@ -49,8 +48,7 @@ export default function BusinessContent() {
   };
 
   return (
-    <DashboardLayout>
-      <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-4xl mx-auto space-y-6">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 rounded-xl bg-role-business/20 flex items-center justify-center">
             <PenTool className="w-6 h-6 text-role-business" />
@@ -119,7 +117,6 @@ export default function BusinessContent() {
             </button>
           </div>
         </div>
-      </div>
-    </DashboardLayout>
+    </div>
   );
 }

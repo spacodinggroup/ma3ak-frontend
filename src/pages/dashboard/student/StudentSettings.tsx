@@ -1,5 +1,4 @@
-import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
-import { Settings, User, Bell, Shield } from 'lucide-react';
+import { Settings, User, Bell } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Switch } from '@/components/ui/switch';
 import { useAuth } from '@/contexts/AuthContext';
@@ -35,8 +34,7 @@ export default function StudentSettings() {
   };
 
   return (
-    <DashboardLayout>
-      <div className="max-w-3xl mx-auto space-y-6">
+    <div className="max-w-3xl mx-auto space-y-6">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 rounded-xl bg-role-student/20 flex items-center justify-center">
             <Settings className="w-6 h-6 text-role-student" />
@@ -109,7 +107,6 @@ export default function StudentSettings() {
         >
           {loading ? "Saving..." : "Save Changes"}
         </button>
-      </div>
-    </DashboardLayout>
+    </div>
   );
 }

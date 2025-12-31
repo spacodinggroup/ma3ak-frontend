@@ -1,4 +1,3 @@
-import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { Users, Search, UserPlus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
@@ -25,13 +24,12 @@ export default function BusinessCustomers() {
     fetchCustomers();
   }, []);
 
-  const filteredCustomers = customers.filter(customer =>
-    customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    customer.email.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredCustomers = (Array.isArray(customers) ? customers : []).filter((customer: any) =>
+    String(customer?.name ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+    String(customer?.email ?? '').toLowerCase().includes(searchTerm.toLowerCase())
   );
   return (
-    <DashboardLayout>
-      <div className="max-w-6xl mx-auto space-y-6">
+    <div className="max-w-6xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-xl bg-role-business/20 flex items-center justify-center">
@@ -90,18 +88,18 @@ export default function BusinessCustomers() {
                   </tr>
                 ))
               ) : (
-                filteredCustomers.map((customer, index) => (
+                filteredCustomers.map((customer: any, index) => (
                   <tr key={index} className="hover:bg-muted/30 transition-colors">
                     <td className="p-4">
-                      <p className="font-medium">{customer.name}</p>
-                      <p className="text-sm text-muted-foreground">{customer.email}</p>
+                      <p className="font-medium">{customer?.name}</p>
+                      <p className="text-sm text-muted-foreground">{customer?.email}</p>
                     </td>
-                    <td className="p-4">{customer.orders}</td>
-                    <td className="p-4 font-medium">{customer.spent}</td>
+                    <td className="p-4">{customer?.orders ?? ''}</td>
+                    <td className="p-4 font-medium">{customer?.spent ?? ''}</td>
                     <td className="p-4">
-                      <span className={`text-xs px-2 py-1 rounded-full ${customer.status === 'active' ? 'bg-green-500/20 text-green-400' : 'bg-muted text-muted-foreground'
+                      <span className={`text-xs px-2 py-1 rounded-full ${customer?.status === 'active' ? 'bg-green-500/20 text-green-400' : 'bg-muted text-muted-foreground'
                         }`}>
-                        {customer.status}
+                        {customer?.status ?? ''}
                       </span>
                     </td>
                   </tr>
@@ -110,7 +108,6 @@ export default function BusinessCustomers() {
             </tbody>
           </table>
         </div>
-      </div>
-    </DashboardLayout>
+    </div>
   );
 }

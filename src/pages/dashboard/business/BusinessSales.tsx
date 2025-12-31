@@ -1,4 +1,3 @@
-import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { TrendingUp, DollarSign, ShoppingCart, Users } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { useState, useEffect } from 'react';
@@ -26,8 +25,7 @@ export default function BusinessSales() {
     fetchSales();
   }, []);
   return (
-    <DashboardLayout>
-      <div className="max-w-6xl mx-auto space-y-6">
+    <div className="max-w-6xl mx-auto space-y-6">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 rounded-xl bg-role-business/20 flex items-center justify-center">
             <TrendingUp className="w-6 h-6 text-role-business" />
@@ -93,7 +91,6 @@ export default function BusinessSales() {
             )}
           </div>
         </div>
-      </div>
-    </DashboardLayout>
+    </div>
   );
 }

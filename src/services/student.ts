@@ -12,6 +12,34 @@ export const getStudentSubjects = async () => {
     return res.data.data;
 };
 
+export const saveStudentSubjects = async (subjects: string[]) => {
+    const payload = { subjects: Array.isArray(subjects) ? subjects : [] };
+
+    try {
+        const res = await api.post("/student/subjects", payload);
+        if (!res.data?.success) throw new Error(res.data?.message || "Failed to save subjects");
+        return res.data.data;
+    } catch (error: any) {
+        const status = error?.response?.status;
+        if (status === 404 || status === 405) {
+            try {
+                const res = await api.put("/student/subjects", payload);
+                if (!res.data?.success) throw new Error(res.data?.message || "Failed to save subjects");
+                return res.data.data;
+            } catch (putError: any) {
+                const putStatus = putError?.response?.status;
+                if (putStatus === 404 || putStatus === 405) {
+                    const res = await api.post("/student/save-subjects", payload);
+                    if (!res.data?.success) throw new Error(res.data?.message || "Failed to save subjects");
+                    return res.data.data;
+                }
+                throw putError;
+            }
+        }
+        throw error;
+    }
+};
+
 export const generateStudyPlan = async (payload) => {
     const res = await api.post("/student/generate-plan", payload);
     if (!res.data.success) throw new Error(res.data.message);
@@ -72,10 +100,32 @@ export const getStudentExams = async () => {
     return res.data.data;
 };
 
+export const submitStudentExamAttempt = async (payload: any) => {
+    try {
+        const res = await api.post("/student/exams/attempt", payload);
+        return res.data;
+    } catch (error: any) {
+        const status = error?.response?.status;
+        if (status === 404 || status === 405) return { success: false };
+        return { success: false };
+    }
+};
+
 export const getStudentPractice = async () => {
     const res = await api.get("/student/practice");
     if (!res.data.success) throw new Error(res.data.message);
     return res.data.data;
+};
+
+export const submitStudentPracticeAttempt = async (payload: any) => {
+    try {
+        const res = await api.post("/student/practice/attempt", payload);
+        return res.data;
+    } catch (error: any) {
+        const status = error?.response?.status;
+        if (status === 404 || status === 405) return { success: false };
+        return { success: false };
+    }
 };
 
 export const getStudentProgress = async () => {

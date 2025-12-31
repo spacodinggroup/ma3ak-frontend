@@ -1,4 +1,3 @@
-import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { Sparkles, Send } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { generateAI } from '@/services/ai';
@@ -9,6 +8,8 @@ interface ChatMessage {
   content: string;
 }
 
+const CHAT_STORAGE_KEY = 'Ma3ak_founder_chat_v1';
+
 const SYSTEM_PROMPT = "You are Ma3ak AI, a strategic advisor for startup founders. Respond directly and concisely without any meta-commentary like 'Here is my analysis' or 'Let me help you'. Provide actionable insights immediately.";
 
 export default function FounderChat() {
@@ -16,6 +17,29 @@ export default function FounderChat() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(CHAT_STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) {
+          const safe = parsed
+            .map((m: any) => ({ role: m?.role, content: m?.content }))
+            .filter((m: any) => (m.role === 'user' || m.role === 'assistant') && typeof m.content === 'string');
+          setMessages(safe);
+        }
+      }
+    } catch {
+    }
+  }, []);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(messages));
+    } catch {
+    }
+  }, [messages]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -30,14 +54,17 @@ export default function FounderChat() {
     setInput('');
 
     const newUserMessage: ChatMessage = { role: 'user', content: userMessage };
-    setMessages(prev => [...prev, newUserMessage]);
+    const nextMessages = [...messages, newUserMessage];
+    setMessages(nextMessages);
     setIsLoading(true);
 
     try {
-      // Build messages array with system prompt
       const apiMessages = [
         { role: "system" as const, content: SYSTEM_PROMPT },
-        { role: "user" as const, content: userMessage }
+        ...nextMessages.map((m) => ({
+          role: m.role === 'user' ? ('user' as const) : ('assistant' as const),
+          content: m.content,
+        }))
       ];
 
       const { reply } = await generateAI({ messages: apiMessages });
@@ -73,8 +100,7 @@ export default function FounderChat() {
   };
 
   return (
-    <DashboardLayout>
-      <div className="max-w-4xl mx-auto h-[calc(100vh-8rem)] flex flex-col">
+    <div className="max-w-4xl mx-auto h-[calc(100vh-8rem)] flex flex-col">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-12 h-12 rounded-xl bg-role-founder/20 flex items-center justify-center">
             <Sparkles className="w-6 h-6 text-role-founder" />
@@ -141,7 +167,6 @@ export default function FounderChat() {
             <Send className="w-4 h-4" />
           </button>
         </div>
-      </div>
-    </DashboardLayout>
+    </div>
   );
 }

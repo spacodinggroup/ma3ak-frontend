@@ -1,8 +1,7 @@
-import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { FlaskConical, Play, Trophy, CheckCircle2, XCircle, AlertCircle, ArrowRight, RotateCcw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Progress } from '@/components/ui/progress';
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import { getStudentPractice } from '@/services/student';
 
 interface Question {
@@ -108,7 +107,6 @@ export default function StudentPractice() {
     setIsAnswered(false);
     setScore(0);
     // Keep weakQuestions but we'll filter them again if they fail twice
-    const currentWeak = [...weakQuestions];
     setWeakQuestions([]);
     setViewMode('retry');
     setIsComplete(false);
@@ -119,20 +117,17 @@ export default function StudentPractice() {
 
   if (loading) {
     return (
-      <DashboardLayout>
-        <div className="flex items-center justify-center min-h-[400px]">
-          <div className="text-center">
-            <div className="w-12 h-12 border-4 border-role-student border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-            <p className="text-muted-foreground font-medium">Loading practice...</p>
-          </div>
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-role-student border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-muted-foreground font-medium">Loading practice...</p>
         </div>
-      </DashboardLayout>
+      </div>
     );
   }
 
   return (
-    <DashboardLayout>
-      <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-4xl mx-auto space-y-6">
         {viewMode === 'list' ? (
           <>
             <div className="flex items-center justify-between">
@@ -306,7 +301,6 @@ export default function StudentPractice() {
             </div>
           </div>
         )}
-      </div>
-    </DashboardLayout>
+    </div>
   );
 }

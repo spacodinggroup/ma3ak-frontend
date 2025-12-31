@@ -4,6 +4,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { generateAIStudyPlan, StudyPlanItem } from '@/services/student';
 import { ROUTES } from '@/constants/routes';
 
+const SUBJECTS_STORAGE_KEY = 'Ma3ak_student_subjects_v1';
+
 export default function StudentPlan() {
   const [studyPlan, setStudyPlan] = useState<StudyPlanItem[]>([]);
   const [loading, setLoading] = useState(false);
@@ -11,7 +13,30 @@ export default function StudentPlan() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const subjects = (location.state as { subjects?: string[] })?.subjects || [];
+  const routeSubjects = (location.state as { subjects?: string[] })?.subjects || [];
+  const [subjects, setSubjects] = useState<string[]>(Array.isArray(routeSubjects) ? routeSubjects : []);
+
+  useEffect(() => {
+    if (Array.isArray(routeSubjects) && routeSubjects.length > 0) {
+      setSubjects(routeSubjects);
+      try {
+        localStorage.setItem(SUBJECTS_STORAGE_KEY, JSON.stringify(routeSubjects));
+      } catch {
+      }
+      return;
+    }
+
+    try {
+      const raw = localStorage.getItem(SUBJECTS_STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.every((x) => typeof x === 'string')) {
+          setSubjects(parsed);
+        }
+      }
+    } catch {
+    }
+  }, [routeSubjects]);
 
   useEffect(() => {
     if (subjects.length === 0) {

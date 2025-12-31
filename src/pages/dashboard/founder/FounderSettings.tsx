@@ -1,4 +1,3 @@
-import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { Settings, User, Bell, Rocket } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Switch } from '@/components/ui/switch';
@@ -41,8 +40,7 @@ export default function FounderSettings() {
   };
 
   return (
-    <DashboardLayout>
-      <div className="max-w-3xl mx-auto space-y-6">
+    <div className="max-w-3xl mx-auto space-y-6">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 rounded-xl bg-role-founder/20 flex items-center justify-center">
             <Settings className="w-6 h-6 text-role-founder" />
@@ -80,7 +78,7 @@ export default function FounderSettings() {
                   <label className="text-sm text-muted-foreground">Name</label>
                   <input
                     value={settings?.name || user?.name || ''}
-                    onChange={(e) => setSettings({ ...settings, name: e.target.value })}
+                    onChange={(e) => setSettings({ ...(settings || {}), name: e.target.value })}
                     className={cn(
                       "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
                       "mt-1"
@@ -91,7 +89,7 @@ export default function FounderSettings() {
                   <label className="text-sm text-muted-foreground">Email</label>
                   <input
                     value={settings?.email || user?.email || ''}
-                    onChange={(e) => setSettings({ ...settings, email: e.target.value })}
+                    onChange={(e) => setSettings({ ...(settings || {}), email: e.target.value })}
                     className={cn(
                       "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
                       "mt-1"
@@ -102,7 +100,7 @@ export default function FounderSettings() {
                   <label className="text-sm text-muted-foreground">Startup Name</label>
                   <input
                     value={settings?.startupName || ''}
-                    onChange={(e) => setSettings({ ...settings, startupName: e.target.value })}
+                    onChange={(e) => setSettings({ ...(settings || {}), startupName: e.target.value })}
                     placeholder="Enter your startup name"
                     className={cn(
                       "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
@@ -144,8 +142,8 @@ export default function FounderSettings() {
                     checked={settings?.notifications?.milestoneReminders ?? true}
                     onCheckedChange={(checked) =>
                       setSettings({
-                        ...settings,
-                        notifications: { ...settings.notifications, milestoneReminders: checked }
+                        ...(settings || {}),
+                        notifications: { ...(settings?.notifications || {}), milestoneReminders: checked }
                       })
                     }
                   />
@@ -156,8 +154,8 @@ export default function FounderSettings() {
                     checked={settings?.notifications?.teamUpdates ?? true}
                     onCheckedChange={(checked) =>
                       setSettings({
-                        ...settings,
-                        notifications: { ...settings.notifications, teamUpdates: checked }
+                        ...(settings || {}),
+                        notifications: { ...(settings?.notifications || {}), teamUpdates: checked }
                       })
                     }
                   />
@@ -168,8 +166,8 @@ export default function FounderSettings() {
                     checked={settings?.notifications?.weeklyReports ?? false}
                     onCheckedChange={(checked) =>
                       setSettings({
-                        ...settings,
-                        notifications: { ...settings.notifications, weeklyReports: checked }
+                        ...(settings || {}),
+                        notifications: { ...(settings?.notifications || {}), weeklyReports: checked }
                       })
                     }
                   />
@@ -191,7 +189,6 @@ export default function FounderSettings() {
         >
           {saving ? 'Saving...' : 'Save Changes'}
         </button>
-      </div>
-    </DashboardLayout>
+    </div>
   );
 }

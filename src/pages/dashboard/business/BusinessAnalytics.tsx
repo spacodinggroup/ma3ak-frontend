@@ -1,4 +1,3 @@
-import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { LineChart, TrendingUp, Users, DollarSign } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { getBusinessAnalytics } from '@/services/business';
@@ -23,8 +22,7 @@ export default function BusinessAnalytics() {
     fetchAnalytics();
   }, []);
   return (
-    <DashboardLayout>
-      <div className="max-w-6xl mx-auto space-y-6">
+    <div className="max-w-6xl mx-auto space-y-6">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 rounded-xl bg-role-business/20 flex items-center justify-center">
             <LineChart className="w-6 h-6 text-role-business" />
@@ -47,10 +45,10 @@ export default function BusinessAnalytics() {
           ) : (
             metrics.map((metric, index) => (
               <div key={index} className="bg-card rounded-xl border border-border p-5">
-                <p className="text-sm text-muted-foreground mb-1">{metric.label}</p>
-                <p className="text-2xl font-bold">{metric.value}</p>
-                <p className={`text-xs mt-1 ${metric.change.startsWith('+') ? 'text-green-400' : 'text-red-400'}`}>
-                  {metric.change}
+                <p className="text-sm text-muted-foreground mb-1">{metric?.label}</p>
+                <p className="text-2xl font-bold">{metric?.value}</p>
+                <p className={`text-xs mt-1 ${typeof metric?.change === 'string' && metric.change.startsWith('+') ? 'text-green-400' : 'text-red-400'}`}>
+                  {metric?.change || ''}
                 </p>
               </div>
             ))
@@ -69,7 +67,6 @@ export default function BusinessAnalytics() {
             </div>
           )}
         </div>
-      </div>
-    </DashboardLayout>
+    </div>
   );
 }

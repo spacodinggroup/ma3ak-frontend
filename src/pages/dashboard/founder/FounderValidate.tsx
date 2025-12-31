@@ -1,4 +1,3 @@
-import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { Lightbulb, CheckCircle, XCircle, HelpCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Textarea } from '@/components/ui/textarea';
@@ -51,8 +50,7 @@ export default function FounderValidate() {
   };
 
   return (
-    <DashboardLayout>
-      <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-4xl mx-auto space-y-6">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 rounded-xl bg-role-founder/20 flex items-center justify-center">
             <Lightbulb className="w-6 h-6 text-role-founder" />
@@ -172,7 +170,6 @@ export default function FounderValidate() {
             </>
           )}
         </div>
-      </div>
-    </DashboardLayout>
+    </div>
   );
 }

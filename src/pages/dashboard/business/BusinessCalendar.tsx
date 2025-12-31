@@ -1,4 +1,3 @@
-import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { CalendarDays, Plus, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
@@ -24,8 +23,7 @@ export default function BusinessCalendar() {
     fetchCalendar();
   }, []);
   return (
-    <DashboardLayout>
-      <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-4xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-xl bg-role-business/20 flex items-center justify-center">
@@ -79,7 +77,6 @@ export default function BusinessCalendar() {
             )}
           </div>
         </div>
-      </div>
-    </DashboardLayout>
+    </div>
   );
 }

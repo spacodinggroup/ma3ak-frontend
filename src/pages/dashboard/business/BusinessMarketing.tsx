@@ -1,4 +1,3 @@
-import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { Megaphone, Plus, TrendingUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Progress } from '@/components/ui/progress';
@@ -25,8 +24,7 @@ export default function BusinessMarketing() {
     fetchMarketing();
   }, []);
   return (
-    <DashboardLayout>
-      <div className="max-w-6xl mx-auto space-y-6">
+    <div className="max-w-6xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-xl bg-role-business/20 flex items-center justify-center">
@@ -108,7 +106,6 @@ export default function BusinessMarketing() {
             ))
           )}
         </div>
-      </div>
-    </DashboardLayout>
+    </div>
   );
 }

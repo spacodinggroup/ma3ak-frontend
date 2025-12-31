@@ -1,8 +1,7 @@
-import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
-import { Clock, Play, Pause, Square, BookOpen, Trophy, History, Timer, AlertCircle } from 'lucide-react';
+import { Play, Pause, Square, BookOpen, Trophy, History, Timer, AlertCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { getStudentTimer, getStudentSubjects } from '@/services/student';
+import { useState, useEffect, useRef } from 'react';
+import { getStudentSubjects } from '@/services/student';
 
 interface Subject {
   id: string;
@@ -135,17 +134,14 @@ export default function StudentTimer() {
 
   if (loading) {
     return (
-      <DashboardLayout>
-        <div className="flex items-center justify-center min-h-[400px]">
-          <div className="w-12 h-12 border-4 border-role-student border-t-transparent rounded-full animate-spin" />
-        </div>
-      </DashboardLayout>
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="w-12 h-12 border-4 border-role-student border-t-transparent rounded-full animate-spin" />
+      </div>
     );
   }
 
   return (
-    <DashboardLayout>
-      <div className="max-w-4xl mx-auto space-y-8">
+    <div className="max-w-4xl mx-auto space-y-8">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-2xl bg-role-student/20 flex items-center justify-center">
@@ -291,7 +287,6 @@ export default function StudentTimer() {
             </div>
           </div>
         </div>
-      </div>
-    </DashboardLayout>
+    </div>
   );
 }

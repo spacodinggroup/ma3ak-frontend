@@ -1,4 +1,3 @@
-import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { Target, Calendar, Clock, ChevronLeft, ChevronRight, AlertCircle, CheckCircle2, TrendingUp, HelpCircle } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { useEffect, useState, useCallback } from 'react';
@@ -134,17 +133,14 @@ export default function StudentExams() {
 
   if (loading) {
     return (
-      <DashboardLayout>
-        <div className="flex items-center justify-center min-h-[400px]">
-          <div className="w-8 h-8 border-4 border-role-student border-t-transparent rounded-full animate-spin" />
-        </div>
-      </DashboardLayout>
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="w-8 h-8 border-4 border-role-student border-t-transparent rounded-full animate-spin" />
+      </div>
     );
   }
 
   return (
-    <DashboardLayout>
-      <div className="max-w-5xl mx-auto">
+    <div className="max-w-5xl mx-auto">
         {viewMode === 'list' ? (
           <div className="space-y-6">
             <div className="flex items-center gap-3">
@@ -398,7 +394,6 @@ export default function StudentExams() {
             </div>
           </div>
         )}
-      </div>
-    </DashboardLayout>
+    </div>
   );
 }

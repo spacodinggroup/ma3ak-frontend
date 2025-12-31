@@ -1,4 +1,3 @@
-import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { FileText, Sparkles, Download } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useEffect, useState } from 'react';
@@ -22,8 +21,7 @@ export default function FounderPitch() {
     loadPitch();
   }, []);
   return (
-    <DashboardLayout>
-      <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-4xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-xl bg-role-founder/20 flex items-center justify-center">
@@ -80,7 +78,6 @@ export default function FounderPitch() {
             ))
           )}
         </div>
-      </div>
-    </DashboardLayout>
+    </div>
   );
 }

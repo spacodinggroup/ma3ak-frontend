@@ -1,4 +1,3 @@
-import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { Settings, User, Bell, CreditCard } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Switch } from '@/components/ui/switch';
@@ -41,8 +40,7 @@ export default function BusinessSettings() {
   };
 
   return (
-    <DashboardLayout>
-      <div className="max-w-3xl mx-auto space-y-6">
+    <div className="max-w-3xl mx-auto space-y-6">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 rounded-xl bg-role-business/20 flex items-center justify-center">
             <Settings className="w-6 h-6 text-role-business" />
@@ -76,7 +74,7 @@ export default function BusinessSettings() {
                   <label className="text-sm text-muted-foreground">Business Name</label>
                   <input
                     value={settings?.businessName || user?.name || ''}
-                    onChange={(e) => setSettings({ ...settings, businessName: e.target.value })}
+                    onChange={(e) => setSettings({ ...(settings || {}), businessName: e.target.value })}
                     className={cn(
                       "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
                       "mt-1"
@@ -87,7 +85,7 @@ export default function BusinessSettings() {
                   <label className="text-sm text-muted-foreground">Email</label>
                   <input
                     value={settings?.email || user?.email || ''}
-                    onChange={(e) => setSettings({ ...settings, email: e.target.value })}
+                    onChange={(e) => setSettings({ ...(settings || {}), email: e.target.value })}
                     className={cn(
                       "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
                       "mt-1"
@@ -128,8 +126,8 @@ export default function BusinessSettings() {
                     checked={settings?.notifications?.salesAlerts ?? true}
                     onCheckedChange={(checked) =>
                       setSettings({
-                        ...settings,
-                        notifications: { ...settings.notifications, salesAlerts: checked }
+                        ...(settings || {}),
+                        notifications: { ...(settings?.notifications || {}), salesAlerts: checked }
                       })
                     }
                   />
@@ -140,8 +138,8 @@ export default function BusinessSettings() {
                     checked={settings?.notifications?.marketingUpdates ?? true}
                     onCheckedChange={(checked) =>
                       setSettings({
-                        ...settings,
-                        notifications: { ...settings.notifications, marketingUpdates: checked }
+                        ...(settings || {}),
+                        notifications: { ...(settings?.notifications || {}), marketingUpdates: checked }
                       })
                     }
                   />
@@ -152,8 +150,8 @@ export default function BusinessSettings() {
                     checked={settings?.notifications?.weeklyReports ?? false}
                     onCheckedChange={(checked) =>
                       setSettings({
-                        ...settings,
-                        notifications: { ...settings.notifications, weeklyReports: checked }
+                        ...(settings || {}),
+                        notifications: { ...(settings?.notifications || {}), weeklyReports: checked }
                       })
                     }
                   />
@@ -175,7 +173,6 @@ export default function BusinessSettings() {
         >
           {saving ? 'Saving...' : 'Save Changes'}
         </button>
-      </div>
-    </DashboardLayout>
+    </div>
   );
 }

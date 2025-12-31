@@ -1,7 +1,8 @@
-import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { FileText, Upload } from 'lucide-react';
-import { useState, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { uploadStudentNote } from '@/services/student';
+
+const NOTES_STORAGE_KEY = 'Ma3ak_student_notes_v1';
 
 export default function StudentNotes() {
   const [notes, setNotes] = useState<string[]>([]);
@@ -9,6 +10,26 @@ export default function StudentNotes() {
   const [error, setError] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(NOTES_STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.every((x) => typeof x === 'string')) {
+          setNotes(parsed);
+        }
+      }
+    } catch {
+    }
+  }, []);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(NOTES_STORAGE_KEY, JSON.stringify(notes));
+    } catch {
+    }
+  }, [notes]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -62,7 +83,6 @@ export default function StudentNotes() {
   };
 
   return (
-    <DashboardLayout>
       <div className="max-w-4xl mx-auto space-y-6">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 rounded-xl bg-role-student/20 flex items-center justify-center">
@@ -164,6 +184,5 @@ export default function StudentNotes() {
           </div>
         )}
       </div>
-    </DashboardLayout>
   );
 }
